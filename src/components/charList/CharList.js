@@ -6,13 +6,13 @@ const CharList = () => {
         <div className="char__list">
             <ul className="char__grid">
                 <li className="card">
-                    <div class="card__block">
-                        <div class="card__header">
-                            <div class="card__header-img">
+                    <div className="card__block">
+                        <div className="card__header">
+                            <div className="card__header-img">
                                 <img src={abyss} alt="char" />
                             </div>
                         </div>
-                        <div class="card__footer">
+                        <div className="card__footer">
                             <p>Abyss</p>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 import { Component } from 'react';
 
 import Spinner from '../spinner/Spinner';
+import ErrorMessage from '../errorMessage/errorMessage';
 
 import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png';
@@ -14,29 +15,36 @@ class RandomChar extends Component {
 
     state = {
         char: {},
-        loading: false
+        loading: true,
+        error: false
     }
 
     marvelService = new MarvelService()
 
     onCharLoaded = (char) => {
-        this.setState({ char })
+        this.setState({ char, loading: false })
+    }
+
+    onError = () => {
+        this.setState({ loading: false, error: true })
     }
 
     updChar = () => {
         this.marvelService
             .getCharacter(Math.floor(Math.random() * (1011400 - 1011000) + 1011000))
             .then(this.onCharLoaded)
+            .catch(this.onError)
     }
 
     render() {
-        let { char, loading } = this.state
-        // let imgStyle = { objectFit: 'cover' }
-        // if (thumbnail.includes('image_not_avalible') || thumbnail.includes('image_not_avalible')) imgStyle = { objectFit: 'fill' }
+        let { char, loading, error } = this.state
+        const errorMessage = error ? <ErrorMessage /> : null
+        const spinner = loading ? <Spinner /> : null
+        const randomCharBlock = !loading && !error ? <View char={char} /> : loading && !error ? spinner : !loading && error ? errorMessage : null
 
         return (
             <div className="randomchar">
-                {loading ? <Spinner /> : <View char={char}/>}
+                {randomCharBlock}
                 <div className="randomchar__static">
                     <p className="randomchar__title">
                         Random character for today!<br />
@@ -57,6 +65,8 @@ class RandomChar extends Component {
 
 const View = ({ char }) => {
     const { thumbnail, name, description, homepage, wiki } = char
+    // let imgStyle = { objectFit: 'cover' }
+    // if (thumbnail.includes('image_not_avalible') || thumbnail.includes('4c002e0305708')) imgStyle = { objectFit: 'fill' }
 
     return (
         <div className="randomchar__block">

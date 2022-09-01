@@ -16,9 +16,10 @@
         object-fit: cover;
     }
     &__info {
-        display: grid;
-        grid-template-rows: minmax(29px, auto) 90px 38px;
-        row-gap: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        max-height: 100%;
         padding-top: 3px;
     }
     &__name {
@@ -26,12 +27,15 @@
         font-size: 22px;
         line-height: 29px;
         text-transform: uppercase;
+        margin-bottom: 10px;
     }
     &__descr {
         font-size: 14px;
         line-height: 18px;
-        max-height: 90px;
-        overflow-y: scroll;
+        // max-height: 80px;
+        flex: 1 1 auto;
+        align-self: stretch;
+        overflow-y: hidden;
     }
     &__btns {
         a:nth-child(1) {

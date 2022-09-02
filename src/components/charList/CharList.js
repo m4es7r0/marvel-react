@@ -19,7 +19,7 @@ class CharList extends Component {
     }
 
     listLoaded = (charList) => {
-        this.setState({ charList })
+        this.setState({ charList, loading: false })
     }
 
     updList = () => {
@@ -61,11 +61,15 @@ class CharList extends Component {
 
     render() {
         const { charList, loading, error } = this.state
-        // const cards = this.renderItems(charList)
+        const cards = this.renderItems(charList)
+        const spinner = loading ? <Spinner /> : null
+        const errorMessage = error ? <ErrorMessage /> : null
+
+        const content = !loading && !error ? cards : loading && !error ? spinner : !loading && error ? errorMessage : null
 
         return (
             <div className="char__list">
-                {/* {cards} */}
+                {content}
                 <button className="button button__main button__long" onClick={() => this.updList()}>
                     <div className="inner">load more</div>
                 </button>

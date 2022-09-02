@@ -1,7 +1,7 @@
 @import './variables';
 
 .button {
-    min-width: 101px;
+    width: 100px;
     color: #fff;
     text-align: center;
     text-transform: uppercase;
@@ -15,11 +15,15 @@
         width: 170px;
         margin: 45px auto 0 auto;
     }
+    &__info {
+        width: 90px;
+    }
     .inner {
         position: relative;
         background-color: $main-color;
         line-height: 18px;
-        padding: 0 18px;
+        width: 100%;
+        padding: 0px;
         transition: none;
         &::before {
             border-color: $main-color transparent;

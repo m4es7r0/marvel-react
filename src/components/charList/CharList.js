@@ -22,8 +22,14 @@ class CharList extends Component {
         this.setState({ charList, loading: false })
     }
 
+    onError = () => {
+        this.setState({ loading: false, error: true })
+    }
+
     updList = () => {
-        this.marvelService.getAllCharacters().then(this.listLoaded)
+        this.marvelService.getAllCharacters()
+            .then(this.listLoaded)
+            .catch(this.onError)
     }
 
     renderItems(arr) {
@@ -37,11 +43,11 @@ class CharList extends Component {
             }
 
             return (
-                <li className="card" key={id}>
+                <li className="card" key={id} onClick={() => this.props.onCharSelect(id)}>
                     <div className="card__block">
                         <div className="card__header">
                             <div className="card__header-img">
-                                <img src={thumbnail} alt="char" style={imgStyle} />
+                                <img src={thumbnail} alt={name} style={imgStyle} />
                             </div>
                         </div>
                         <div className="card__footer">

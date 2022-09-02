@@ -1,28 +1,77 @@
-import './charList.scss';
-import abyss from '../../resources/img/abyss.jpg';
+import { Component } from 'react';
+import Spinner from '../spinner/Spinner';
+import ErrorMessage from '../errorMessage/errorMessage';
 
-const CharList = () => {
-    return (
-        <div className="char__list">
-            <ul className="char__grid">
-                <li className="card">
+import MarvelService from '../../services/MarvelService';
+
+import './charList.scss';
+
+class CharList extends Component {
+    state = {
+        charList: [],
+        loading: true,
+        error: false
+    }
+    marvelService = new MarvelService()
+
+    componentDidMount() {
+        this.updList()
+    }
+
+    listLoaded = (charList) => {
+        this.setState({ charList })
+    }
+
+    updList = () => {
+        this.marvelService.getAllCharacters().then(this.listLoaded)
+    }
+
+    renderItems(arr) {
+
+        const items = arr.map(card => {
+            let { id, name, thumbnail } = card
+
+            let imgStyle = { objectFit: '' }
+            if (thumbnail.includes('image_not_available') || thumbnail.includes('4c002e0305708')) {
+                imgStyle = { objectFit: 'unset' }
+            }
+
+            return (
+                <li className="card" key={id}>
                     <div className="card__block">
                         <div className="card__header">
                             <div className="card__header-img">
-                                <img src={abyss} alt="char" />
+                                <img src={thumbnail} alt="char" style={imgStyle} />
                             </div>
                         </div>
                         <div className="card__footer">
-                            <p>Abyss</p>
+                            <p>{name}</p>
                         </div>
                     </div>
                 </li>
+            )
+        })
+
+        return (
+            <ul className="char__grid">
+                {items}
             </ul>
-            <button className="button button__main button__long">
-                <div className="inner">load more</div>
-            </button>
-        </div>
-    )
+        )
+    }
+
+    render() {
+        const { charList, loading, error } = this.state
+        // const cards = this.renderItems(charList)
+
+        return (
+            <div className="char__list">
+                {/* {cards} */}
+                <button className="button button__main button__long" onClick={() => this.updList()}>
+                    <div className="inner">load more</div>
+                </button>
+            </div>
+        )
+    }
 }
 
 export default CharList;

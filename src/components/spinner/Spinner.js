@@ -1,4 +1,4 @@
-import loader from './loader.gif'
+import loader from './357.png'
 import './spinner.scss'
 
 const Spinner = () => {

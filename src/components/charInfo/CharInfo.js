@@ -100,6 +100,7 @@ const View = ({ char }) => {
                 {comics.length > 0 ? null : `There is no comics with ${name}`}
                 {
                     comics.map((item, i) => {
+                        // eslint-disable-next-line
                         if (i >= 6) return;
                         let comicId = item.resourceURI.replace('http://gateway.marvel.com/v1/public/comics/', '')
                         return (

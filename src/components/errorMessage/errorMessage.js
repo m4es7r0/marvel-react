@@ -1,10 +1,10 @@
 import './errorMessage.scss'
 
-const ErrorMessage = () => {
+const ErrorMessage = ({ paragraph = true }) => {
     return (
         <div className="error">
-            <h2>Error</h2>
-            <p>problems with server, try restart page</p>
+            {paragraph ? <h2>Error</h2> : <h2 style={{fontSize: '46px'}}>Error</h2>}
+            {paragraph ? <p>problems with server, try restart page</p> : null}
         </div>
     )
 }

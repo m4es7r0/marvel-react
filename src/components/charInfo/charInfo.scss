@@ -21,9 +21,6 @@
     }
 
     &__basics {
-        // display: grid;
-        // grid-template-columns: 150px auto;
-        // column-gap: 25px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -44,9 +41,11 @@
 
     &__btns {
         width: 200px;
+
         div {
             flex-direction: row;
             justify-content: space-between;
+
             a {
                 div {
                     justify-content: center;

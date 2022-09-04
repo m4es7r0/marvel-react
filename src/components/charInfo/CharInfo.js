@@ -18,11 +18,24 @@ class CharInfo extends Component {
 
     componentDidMount() {
         this.updChar()
+        window.addEventListener('scroll', this.positionStickyByScroll)
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.charId !== prevProps.charId) {
             this.updChar()
+        }
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener(this.positionStickyByScroll)
+    }
+
+    positionStickyByScroll = () => {
+        if (window.pageYOffset >= document.getElementById('sticky').offsetHeight) {
+            document.getElementById('sticky').classList.add('sticky')
+        } else {
+            document.getElementById('sticky').classList.remove('sticky')
         }
     }
 
@@ -56,7 +69,7 @@ class CharInfo extends Component {
         const content = !(loading || error || !char) ? <View char={char} /> : null
 
         return (
-            <div className="char__info">
+            <div className="char__info" id='sticky'>
                 {skeleton}
                 {spinner}
                 {errorMessage}

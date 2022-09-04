@@ -8,28 +8,61 @@ import './charList.scss';
 
 class CharList extends Component {
     state = {
+        offset: 210,
         charList: [],
+        charEnded: false,
         loading: true,
-        error: false
+        loadingNewItem: false,
+        error: false,
     }
     marvelService = new MarvelService()
 
     componentDidMount() {
-        this.updList()
+        if (this.state.offset < 219) {
+            this.onRequest()
+        }
+        window.addEventListener('scroll', this.onScrollLoading)
     }
 
-    listLoaded = (charList) => {
-        this.setState({ charList, loading: false })
+    componentWillUnmount() {
+        window.removeEventListener(this.onScrollLoading)
+    }
+
+    onScrollLoading = () => {
+        if (this.state.loadingNewItem) return
+        if (this.state.charEnded) return
+
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight + 50) {
+            this.onRequest(this.state.offset);
+        }
+    }
+
+    onRequest = (offset) => {
+        this.onListLoading()
+        this.marvelService.getAllCharacters(offset)
+            .then(this.listLoaded)
+            .catch(this.onError)
+    }
+
+    onListLoading = () => {
+        this.setState({ loadingNewItem: true })
+    }
+
+    listLoaded = (newCharList) => {
+        let ended = false
+        if (newCharList.length < 9) ended = true
+
+        this.setState(({ charList, offset }) => ({
+            charList: [...charList, ...newCharList],
+            loading: false,
+            loadingNewItem: false,
+            offset: offset + 9,
+            charEnded: ended
+        }))
     }
 
     onError = () => {
         this.setState({ loading: false, error: true })
-    }
-
-    updList = () => {
-        this.marvelService.getAllCharacters()
-            .then(this.listLoaded)
-            .catch(this.onError)
     }
 
     renderItems(arr) {
@@ -66,19 +99,28 @@ class CharList extends Component {
     }
 
     render() {
-        const { charList, loading, error } = this.state
+        const { charList, loading, loadingNewItem, error, offset } = this.state
         const cards = this.renderItems(charList)
-        const spinner = loading ? <Spinner /> : null
+        // const spinner = loading ? <Spinner /> : null
         const errorMessage = error ? <ErrorMessage /> : null
 
-        const content = !loading && !error ? cards : loading && !error ? spinner : !loading && error ? errorMessage : null
+        const content =
+            !loading && !error ? cards
+                //  : loading && !error ? spinner 
+                : !loading && error ? errorMessage
+                    : null
 
         return (
             <div className="char__list">
                 {content}
-                <button className="button button__main button__long" onClick={() => this.updList()}>
+                {loadingNewItem ? <Spinner /> : null}
+                {/* <button
+                    className="button button__main button__long"
+                    disabled={loadingNewItem}
+                    onClick={() => this.onRequest(offset)}
+                >
                     <div className="inner">load more</div>
-                </button>
+                </button> */}
             </div>
         )
     }

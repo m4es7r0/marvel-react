@@ -107,10 +107,10 @@ const View = ({ char }) => {
                     </div>
                 </div>
             </div>
-            <div className="char__descr">{description}</div>
+            <div className="char__descr">{description}<p style={{ fontWeight: '600', display: 'inline-block' }}>{name}</p></div>
             <div className="char__comics">Comics:</div>
             <ul className="char__comics-list">
-                {comics.length > 0 ? null : `There is no comics with ${name}`}
+                {comics.length > 0 ? null : <p>There is no comics with <span style={{ fontWeight: '600' }}>{name}</span></p>}
                 {
                     comics.map((item, i) => {
                         // eslint-disable-next-line

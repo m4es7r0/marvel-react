@@ -21,7 +21,7 @@ class MarvelService {
     })
 
     _transformData = (data) => {
-        if (data.description.length === 0) return { ...data, description: 'there is no description for this character' }
+        if (data.description.length === 0) return { ...data, description: `There is no description for ` }
         else if (data.description.length >= 213) return { ...data, description: data.description.slice(0, 200) + '...' }
         return data
     }

@@ -107,7 +107,9 @@ const View = ({ char }) => {
                     </div>
                 </div>
             </div>
-            <div className="char__descr">{description}<p style={{ fontWeight: '600', display: 'inline-block' }}>{name}</p></div>
+            <div className="char__descr">
+                <DescrForChar description={description} name={name} />
+            </div>
             <div className="char__comics">Comics:</div>
             <ul className="char__comics-list">
                 {comics.length > 0 ? null : <p>There is no comics with <span style={{ fontWeight: '600' }}>{name}</span></p>}
@@ -126,6 +128,30 @@ const View = ({ char }) => {
             </ul>
         </>
     )
+}
+
+const DescrForChar = ({ description, name }) => {
+
+    const p = (
+        <p style={{ fontWeight: '600', display: 'inline'}}>{name}</p>
+    )
+
+    const noDescription = `There is no description for ${name}`
+
+    if (description === noDescription) {
+        return (
+            <>
+                {description.replace(name, '')}
+                {p}
+            </>
+        )
+    } else {
+        return (
+            <>
+                {description}
+            </>
+        )
+    }
 }
 
 export default CharInfo;

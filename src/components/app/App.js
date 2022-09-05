@@ -17,6 +17,18 @@ class App extends Component {
         this.setState({ charSelected: id })
     }
 
+    transformDescriptonForCharInfo = (description, name) => {
+        if (description === `There is no description for ${name}`) {
+            return (
+                <>
+                    {description.replace(name, '')}
+                    <p style={{ fontWeight: '600', display: 'inline' }}>{name}</p>
+                </>
+            )
+        }
+        return description
+    }
+
     render() {
         return (
             <div className="app">
@@ -24,8 +36,14 @@ class App extends Component {
                 <main>
                     <ErrorBoundary><RandomChar /></ErrorBoundary>
                     <div className="char__content">
-                        <ErrorBoundary><CharList onCharSelect={this.onCharSelect} /></ErrorBoundary>
-                        <ErrorBoundary><CharInfo charId={this.state.charSelected} /></ErrorBoundary>
+                        <ErrorBoundary>
+                            <CharList onCharSelect={this.onCharSelect} />
+                        </ErrorBoundary>
+                        <ErrorBoundary>
+                            <CharInfo
+                                charId={this.state.charSelected}
+                                renderDescription={(description, name) => this.transformDescriptonForCharInfo(description, name)} />
+                        </ErrorBoundary>
                     </div>
                     <img className="bg-decoration" src={decoration} alt="vision" />
                 </main>

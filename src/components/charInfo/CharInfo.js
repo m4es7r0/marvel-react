@@ -68,7 +68,7 @@ class CharInfo extends Component {
         const errorMessage = error ? <ErrorMessage /> : null
         const spinner = loading ? <Spinner /> : null
         const skeleton = char || errorMessage || spinner ? null : <Skeleton />
-        const content = !(loading || error || !char) ? <View char={char} /> : null
+        const content = !(loading || error || !char) ? <View char={char} renderDescription={this.props.renderDescription} /> : null
 
         return (
             <div className="char__info" id='sticky'>
@@ -81,7 +81,7 @@ class CharInfo extends Component {
     }
 }
 
-const View = ({ char }) => {
+const View = ({ char, renderDescription }) => {
     const { name, description, thumbnail, wiki, homepage, comics } = char
 
     let imgStyle = { objectFit: '' }
@@ -110,7 +110,7 @@ const View = ({ char }) => {
                 </div>
             </div>
             <div className="char__descr">
-                <DescrForChar description={description} name={name} />
+                {renderDescription(description, name)}
             </div>
             <div className="char__comics">Comics:</div>
             <ul className="char__comics-list">
@@ -130,30 +130,6 @@ const View = ({ char }) => {
             </ul>
         </>
     )
-}
-
-const DescrForChar = ({ description, name }) => {
-
-    const p = (
-        <p style={{ fontWeight: '600', display: 'inline'}}>{name}</p>
-    )
-
-    const noDescription = `There is no description for ${name}`
-
-    if (description === noDescription) {
-        return (
-            <>
-                {description.replace(name, '')}
-                {p}
-            </>
-        )
-    } else {
-        return (
-            <>
-                {description}
-            </>
-        )
-    }
 }
 
 CharInfo.propTypes = {

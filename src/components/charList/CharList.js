@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Spinner from '../spinner/Spinner';
@@ -17,6 +17,7 @@ class CharList extends Component {
         loadingNewItem: false,
         error: false,
     }
+
     marvelService = new MarvelService()
 
     componentDidMount() {
@@ -67,9 +68,19 @@ class CharList extends Component {
         this.setState({ loading: false, error: true })
     }
 
+    itemsRef = []
+
+    setRef = (ref) => {
+        this.itemsRef.push(ref)
+    }
+
+    focusOnItem = (id) => {
+        this.itemsRef[id].focus()
+    }
+
     renderItems(arr) {
 
-        const items = arr.map(card => {
+        const items = arr.map((card, i) => {
             let { id, name, thumbnail } = card
 
             let imgStyle = { objectFit: '' }
@@ -78,7 +89,21 @@ class CharList extends Component {
             }
 
             return (
-                <li className="card" key={id} onClick={() => this.props.onCharSelect(id)}>
+                <li className="card"
+                    key={id}
+                    ref={this.activeChar}
+                    tabIndex={0}
+                    onClick={() => {
+                        this.props.onCharSelect(id)
+                        this.focusOnItem(i)
+                    }}
+                    onKeyDown={(e) => {
+                        if (e.key === ' ' || e.key === 'Enter') {
+                            this.props.onCharSelect(id)
+                            this.focusOnItem(id)
+                        }
+                    }}
+                    >
                     <div className="card__block">
                         <div className="card__header">
                             <div className="card__header-img">

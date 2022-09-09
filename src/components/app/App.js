@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useState } from "react";
 
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import AppHeader from "../appHeader/AppHeader";
@@ -8,16 +8,14 @@ import CharInfo from "../charInfo/CharInfo";
 
 import decoration from '../../resources/img/vision.png';
 
-class App extends Component {
-    state = {
-        charSelected: null
+const App = () => {
+    const [selectedChar, setChar] = useState(null);
+
+    const onCharSelected = (id) => {
+        setChar(id);
     }
 
-    onCharSelect = (id) => {
-        this.setState({ charSelected: id })
-    }
-
-    transformDescriptonForCharInfo = (description, name) => {
+    const transformDescriptonForCharInfo = (description, name) => {
         if (description === `There is no description for ${name}`) {
             return (
                 <>
@@ -29,27 +27,25 @@ class App extends Component {
         return description
     }
 
-    render() {
-        return (
-            <div className="app">
-                <AppHeader />
-                <main>
-                    <ErrorBoundary><RandomChar /></ErrorBoundary>
-                    <div className="char__content">
-                        <ErrorBoundary>
-                            <CharList onCharSelect={this.onCharSelect} />
-                        </ErrorBoundary>
-                        <ErrorBoundary>
-                            <CharInfo
-                                charId={this.state.charSelected}
-                                renderDescription={(description, name) => this.transformDescriptonForCharInfo(description, name)} />
-                        </ErrorBoundary>
-                    </div>
-                    <img className="bg-decoration" src={decoration} alt="vision" />
-                </main>
-            </div>
-        )
-    }
+    return (
+        <div className="app">
+            <AppHeader />
+            <main>
+                <ErrorBoundary><RandomChar /></ErrorBoundary>
+                <div className="char__content">
+                    <ErrorBoundary>
+                        <CharList onCharSelected={onCharSelected} />
+                    </ErrorBoundary>
+                    <ErrorBoundary>
+                        <CharInfo
+                            charId={selectedChar}
+                            renderDescription={(description, name) => transformDescriptonForCharInfo(description, name)} />
+                    </ErrorBoundary>
+                </div>
+                <img className="bg-decoration" src={decoration} alt="vision" />
+            </main>
+        </div>
+    )
 }
 
 export default App;

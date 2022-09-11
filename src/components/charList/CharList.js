@@ -22,6 +22,7 @@ const CharList = (props) => {
         if (newItemsLoading && !isEnd) {
             onRequest();
         }
+        // eslint-disable-next-line
     }, [newItemsLoading])
 
     useEffect(() => {
@@ -73,7 +74,7 @@ const CharList = (props) => {
             return (
                 <li className="card"
                     key={id}
-                    ref={(el) => itemsRef.current[i] = el}
+                    ref={(el) => itemsRef[i] = el}
                     tabIndex={0}
                     onClick={() => {
                         props.onCharSelected(id)

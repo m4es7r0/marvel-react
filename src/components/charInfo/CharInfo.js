@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import ErrorMessage from '../errorMessage/errorMessage';
@@ -9,76 +9,75 @@ import MarvelService from '../../services/MarvelService';
 
 import './charInfo.scss';
 
-class CharInfo extends Component {
-    state = {
+const CharInfo = ({ ...props }) => {
+    const [state, setState] = React.useState({
         char: null,
         loading: false,
         error: false,
-    }
+    })
 
-    marvelService = new MarvelService()
+    const marvelService = new MarvelService()
 
-    componentDidMount() {
-        this.updChar()
-        window.addEventListener('scroll', this.positionStickyByScroll)
-    }
+    React.useEffect(() => {
+        updChar()
+        window.addEventListener('scroll', positionStickyByScroll)
+        return () => window.removeEventListener('scroll', positionStickyByScroll)
+        // eslint-disable-next-line
+    }, [])
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.props.charId !== prevProps.charId) {
-            this.updChar()
+    React.useEffect(() => {
+        if (props.charId) {
+            updChar()
         }
-    }
+        // eslint-disable-next-line
+    }, [props.charId])
 
-    componentWillUnmount() {
-        window.removeEventListener(this.positionStickyByScroll)
-    }
+    const stickyRef = React.useRef()
 
-    positionStickyByScroll = () => {
-        if (window.pageYOffset >= document.getElementById('sticky').offsetHeight) {
-            document.getElementById('sticky').classList.add('sticky')
+    const positionStickyByScroll = React.useCallback(() => {
+        if (window.pageYOffset >= stickyRef.current.offsetHeight - 50) {
+            stickyRef.current.classList.add('sticky')
         } else {
-            document.getElementById('sticky').classList.remove('sticky')
+            stickyRef.current.classList.remove('sticky')
         }
+    }, [])
+
+    const onLoaded = (char) => {
+        setState(state => ({ ...state, char, loading: false }))
     }
 
-    onLoaded = (char) => {
-        this.setState({ char, loading: false })
+    const onError = () => {
+        setState(state => ({ ...state, loading: false, error: true }))
     }
 
-    onError = () => {
-        this.setState({ loading: false, error: true })
-    }
-
-    updChar = () => {
-        const { charId } = this.props
+    const updChar = () => {
+        const { charId } = props
         if (!charId) {
             return
         }
 
-        this.setState({ loading: true, error: false })
+        setState(state => ({ ...state, loading: true, error: false }))
 
-        this.marvelService.getCharacter(charId)
-            .then(this.onLoaded)
-            .catch(this.onError)
+        marvelService.getCharacter(charId)
+            .then(onLoaded)
+            .catch(onError)
     }
 
-    render() {
-        const { char, loading, error } = this.state
+    const { char, loading, error } = state
 
-        const errorMessage = error ? <ErrorMessage /> : null
-        const spinner = loading ? <Spinner /> : null
-        const skeleton = char || errorMessage || spinner ? null : <Skeleton />
-        const content = !(loading || error || !char) ? <View char={char} renderDescription={this.props.renderDescription} /> : null
+    const errorMessage = error ? <ErrorMessage /> : null
+    const spinner = loading ? <Spinner /> : null
+    const skeleton = char || errorMessage || spinner ? null : <Skeleton />
+    const content = !(loading || error || !char) ? <View char={char} renderDescription={props.renderDescription} /> : null
 
-        return (
-            <div className="char__info" id='sticky'>
-                {skeleton}
-                {spinner}
-                {errorMessage}
-                {content}
-            </div>
-        )
-    }
+    return (
+        <div className="char__info" id='sticky' ref={stickyRef}>
+            {skeleton}
+            {spinner}
+            {errorMessage}
+            {content}
+        </div>
+    )
 }
 
 const View = ({ char, renderDescription }) => {

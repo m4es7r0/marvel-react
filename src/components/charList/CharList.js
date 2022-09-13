@@ -4,56 +4,48 @@ import PropTypes from 'prop-types';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
 
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 
 import './charList.scss';
 
 const CharList = (props) => {
     const [charList, setCharList] = useState([])
-    const [initialLoading, setInitialLoading] = useState(true)
     const [newItemsLoading, setNewItemsLoading] = useState(true)
     const [offset, setOffset] = useState(210)
     const [isEnd, setIsEnd] = useState(false)
-    const [error, setError] = useState(false)
 
-    const marvelService = new MarvelService()
-
-    useEffect(() => {
-        if (newItemsLoading && !isEnd) {
-            onRequest();
-        }
-        // eslint-disable-next-line
-    }, [newItemsLoading])
+    const { loading, error, getAllCharacters } = useMarvelService()
 
     useEffect(() => {
         window.addEventListener('scroll', onScroll);
         return () => window.removeEventListener('scroll', onScroll);
     }, [])
 
-    const onRequest = () => {
-        initialLoading ? setNewItemsLoading(false) : setNewItemsLoading(true);
-        marvelService.getAllCharacters(offset)
-            .then(listLoaded)
-            .catch(onError)
-            .finally(() => setNewItemsLoading(false))
-    }
-
-    const listLoaded = (newCharList) => {
-        setInitialLoading(false);
-        setCharList((charList) => [...charList, ...newCharList]);
-        setOffset((offset) => offset + 9);
-        setIsEnd(newCharList.length < 9 ? true : false);
-    }
-
-    const onError = () => {
-        setError(true)
-    }
+    useEffect(() => {
+        if (newItemsLoading && !isEnd) onRequest()
+        // eslint-disable-next-line
+    }, [newItemsLoading])
 
     const onScroll = () => {
         if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight + 50) {
             setNewItemsLoading(true);
         }
     }
+
+    const onRequest = () => {
+        loading ? setNewItemsLoading(false) : setNewItemsLoading(true);
+        getAllCharacters(offset)
+            .then(listLoaded)
+            .finally(() => setNewItemsLoading(false))
+    }
+
+    const listLoaded = (newCharList) => {
+        setCharList((charList) => [...charList, ...newCharList]);
+        setOffset((offset) => offset + 9);
+        setIsEnd(newCharList.length < 9 ? true : false);
+    }
+
+
 
     const itemsRef = useRef([])
 
@@ -81,7 +73,7 @@ const CharList = (props) => {
                         focusOnItem(i)
                     }}
                     onKeyDown={(e) => {
-                        if (e.key === ' ' || e.key === 'Enter') {
+                        if (e.key === 'Enter') {
                             props.onCharSelected(id)
                             focusOnItem(id)
                         }
@@ -108,27 +100,13 @@ const CharList = (props) => {
         )
     }
 
-    const cards = renderItems(charList)
-    const spinner = initialLoading ? <Spinner /> : null
-    const errorMessage = error ? <ErrorMessage /> : null
-
-    const content =
-        !initialLoading && !error ? cards
-            : initialLoading && !error ? spinner
-                : !initialLoading && error ? errorMessage
-                    : null
+    const errorMessage = error ? <ErrorMessage paragraph={true} /> : null
+    const content = error ? errorMessage : renderItems(charList)
 
     return (
         <div className="char__list">
             {content}
             {newItemsLoading ? <Spinner /> : null}
-            {/* <button
-                className="button button__main button__long"
-                disabled={newItemsLoading}
-                onClick={() => onRequest(offset)}
-            >
-                <div className="inner">load more</div>
-            </button> */}
         </div>
     )
 }

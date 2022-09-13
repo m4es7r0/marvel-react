@@ -5,18 +5,14 @@ import ErrorMessage from '../errorMessage/errorMessage';
 import Spinner from '../spinner/Spinner';
 import Skeleton from '../skeleton/Skeleton'
 
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 
 import './charInfo.scss';
 
-const CharInfo = ({ ...props }) => {
-    const [state, setState] = React.useState({
-        char: null,
-        loading: false,
-        error: false,
-    })
+const CharInfo = (props) => {
+    const [char, setChar] = React.useState(null)
 
-    const marvelService = new MarvelService()
+    const { error, loading, getCharacter } = useMarvelService()
 
     React.useEffect(() => {
         updChar()
@@ -43,29 +39,16 @@ const CharInfo = ({ ...props }) => {
     }, [])
 
     const onLoaded = (char) => {
-        setState(state => ({ ...state, char, loading: false }))
-    }
-
-    const onError = () => {
-        setState(state => ({ ...state, loading: false, error: true }))
+        setChar(char)
     }
 
     const updChar = () => {
-        const { charId } = props
-        if (!charId) {
-            return
-        }
-
-        setState(state => ({ ...state, loading: true, error: false }))
-
-        marvelService.getCharacter(charId)
+        if (!props.charId) return
+        getCharacter(props.charId)
             .then(onLoaded)
-            .catch(onError)
     }
 
-    const { char, loading, error } = state
-
-    const errorMessage = error ? <ErrorMessage /> : null
+    const errorMessage = error ? <ErrorMessage paragraph={false} /> : null
     const spinner = loading ? <Spinner /> : null
     const skeleton = char || errorMessage || spinner ? null : <Skeleton />
     const content = !(loading || error || !char) ? <View char={char} renderDescription={props.renderDescription} /> : null

@@ -1,45 +1,38 @@
 import React from 'react';
 
+import useMarvelService from '../../services/MarvelService';
+
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
 
 import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png';
-import MarvelService from '../../services/MarvelService';
 
 const RandomChar = () => {
-    const [state, setState] = React.useState({
-        char: {},
-        loading: true,
-        error: false
-    })
+    const [char, setChar] = React.useState(null)
 
-    const marvelService = new MarvelService()
+    const { loading, error, getCharacter } = useMarvelService()
 
     React.useEffect(() => {
         updChar()
+        // eslint-disable-next-line
     }, [])
 
     const onCharLoaded = (char) => {
-        setState(state => ({ ...state, char, loading: false }))
-    }
-
-    const onError = () => {
-        setState(state => ({ ...state, loading: false, error: true }))
+        setChar(char)
     }
 
     const updChar = () => {
-        setState(state => ({ ...state, loading: true, error: false }))
-        marvelService
-            .getCharacter(Math.floor(Math.random() * (1011400 - 1011000) + 1011000))
+        getCharacter((Math.random() * (1011420 - 1011003) + 1011003).toFixed(0))
             .then(onCharLoaded)
-            .catch(onError)
     }
 
-    let { char, loading, error } = state
     const errorMessage = error ? <ErrorMessage /> : null
     const spinner = loading ? <Spinner /> : null
-    const randomCharBlock = !loading && !error ? <View char={char} /> : loading && !error ? spinner : !loading && error ? errorMessage : null
+    const randomCharBlock = !(loading || error || !char) ? <View char={char} />
+     : loading ? spinner 
+     : error ? errorMessage 
+     : null;
 
     return (
         <div className="randomchar">
@@ -52,7 +45,7 @@ const RandomChar = () => {
                 <p className="randomchar__title">
                     Or choose another one
                 </p>
-                <button className="button button__main">
+                <button className="button button__main" disabled={loading}>
                     <div className="inner" onClick={() => updChar()}>try it</div>
                 </button>
                 <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />

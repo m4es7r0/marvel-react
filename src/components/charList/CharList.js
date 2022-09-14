@@ -36,10 +36,10 @@ const CharList = (props) => {
         loading ? setNewItemsLoading(false) : setNewItemsLoading(true);
         getAllCharacters(offset)
             .then(listLoaded)
-            .finally(() => setNewItemsLoading(false))
     }
 
     const listLoaded = (newCharList) => {
+        setNewItemsLoading(false);
         setCharList((charList) => [...charList, ...newCharList]);
         setOffset((offset) => offset + 9);
         setIsEnd(newCharList.length < 9 ? true : false);

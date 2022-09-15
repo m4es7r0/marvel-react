@@ -1,51 +1,27 @@
-import { useState } from "react";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom'
 
-import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import AppHeader from "../appHeader/AppHeader";
-import RandomChar from "../randomChar/RandomChar";
-import CharList from "../charList/CharList";
-import CharInfo from "../charInfo/CharInfo";
-
-import decoration from '../../resources/img/vision.png';
+import { Main, Comics, Comic } from '../pages';
 
 const App = () => {
-    const [selectedChar, setChar] = useState(null);
+    const [comicID, setComicID] = React.useState(0)
 
-    const onCharSelected = (id) => {
-        setChar(id);
+    const setComic = (id) => {
+        setComicID(id)
     }
-
-    const transformDescriptonForCharInfo = (description, name) => {
-        if (description === `There is no description for ${name}`) {
-            return (
-                <>
-                    {description.replace(name, '')}
-                    <p style={{ fontWeight: '600', display: 'inline' }}>{name}</p>
-                </>
-            )
-        }
-        return description
-    }
+    console.log(comicID);
 
     return (
         <div className="app">
             <AppHeader />
-            <main>
-                <ErrorBoundary>
-                    <RandomChar />
-                </ErrorBoundary>
-                <div className="char__content">
-                    <ErrorBoundary>
-                        <CharList onCharSelected={onCharSelected} />
-                    </ErrorBoundary>
-                    <ErrorBoundary>
-                        <CharInfo
-                            charId={selectedChar}
-                            renderDescription={(description, name) => transformDescriptonForCharInfo(description, name)} />
-                    </ErrorBoundary>
-                </div>
-                <img className="bg-decoration" src={decoration} alt="vision" />
-            </main>
+            <Routes>
+                <Route path='/'>
+                    <Route index element={<Main setComic={setComic} />} />
+                    <Route path='comics' element={<Comics setComic={setComic} />} />
+                    <Route path='comics/*' element={<Comic comicID={comicID} />} />
+                </Route>
+            </Routes>
         </div>
     )
 }

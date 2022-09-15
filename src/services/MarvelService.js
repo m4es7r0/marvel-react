@@ -17,9 +17,23 @@ const useMarvelService = () => {
         wiki: char.urls[1].url,
     })
 
+    const _transformComic = (comic) => ({
+        id: comic.id,
+        digitalId: comic.digitalId,
+        title: comic.title,
+        description: comic.description,
+        pages: comic.pageCount,
+        prices: {
+            print: comic.prices.filter(item => item.type === 'printPrice'),
+            digital: comic.prices.filter(item => item.type === 'digitalPurchasePrice')
+        },
+        thumbnail: `${comic.thumbnail.path}.${comic.thumbnail.extension}`,
+        language: comic.textObjects.language || 'en-us'
+    })
+
     const _transformData = (data) => {
         if (data.description.length === 0) return { ...data, description: `There is no description for ${data.name}` }
-        else if (data.description.length >= 213) return { ...data, description: data.description.slice(0, 200) + '...' }
+        if (data.description.length >= 213) return { ...data, description: data.description.slice(0, 200) + '...' }
         return data
     }
 
@@ -28,14 +42,26 @@ const useMarvelService = () => {
         return res.data.results.map(_transformCharacter)
     }
 
+    const getAllComics = async (offset = 0) => {
+        const res = await request(`${_apiBase}comics?noVariants=true&orderBy=-focDate&limit=8&offset=${offset}&apikey=${_apiKey}`)
+        return res.data.results.map(_transformComic)
+    }
+
     const getCharacter = async (id = 1011096) => {
         const res = await request(`${_apiBase}characters/${id}?apikey=${_apiKey}`)
         return _transformData(_transformCharacter(res.data.results[0]))
     }
 
+    const getComic = async (id = 84347) => {
+        const res = await request(`${_apiBase}comics/${id}?apikey=${_apiKey}`)
+        return _transformComic(res.data.results[0])
+    }
+
     return {
         getCharacter,
+        getComic,
         getAllCharacters,
+        getAllComics,
         loading,
         error,
         clearError

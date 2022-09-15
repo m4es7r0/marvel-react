@@ -27,7 +27,7 @@ const CharList = (props) => {
     }, [newItemsLoading])
 
     const onScroll = () => {
-        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight + 50) {
+        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 1) {
             setNewItemsLoading(true);
         }
     }
@@ -44,8 +44,6 @@ const CharList = (props) => {
         setOffset((offset) => offset + 9);
         setIsEnd(newCharList.length < 9 ? true : false);
     }
-
-
 
     const itemsRef = useRef([])
 

@@ -7,7 +7,7 @@ import ErrorMessage from '../errorMessage/errorMessage';
 import Spinner from '../spinner/Spinner';
 import './comicsList.scss';
 
-const ComicsList = ({ setComic }) => {
+const ComicsList = () => {
     const [comicsList, setComicsList] = useState([])
     const [newItemsLoading, setNewItemsLoading] = useState(true)
     const [offset, setOffset] = useState(0)
@@ -54,16 +54,15 @@ const ComicsList = ({ setComic }) => {
             return (
                 <li
                     className="comics__item"
-                    key={id}
-                    onClick={() => setComic(id)}>
-                    <Link to={`comics/${id}`}>
+                    key={index}>
+                    <Link to={`${id}`}>
                         <img src={thumbnail} alt={title} className="comics__item-img" style={imgStyle} />
                         <div className="comics__item-name">{title}</div>
                         <div className="comics__item-price">
                             <p
                                 style={priceStyle}
                             >
-                                {prices.print[0].price !== 0 ? `${prices.print[0].price}$` : `not avalible in print`}
+                                {prices.print[0].price !== 0 ? `${prices.print[0].price}$` : `not available in print`}
                             </p>
                         </div>
                     </Link>

@@ -1,34 +1,58 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom'
+
 import useMarvelService from '../../services/MarvelService';
+import ErrorMessage from '../errorMessage/errorMessage';
+import Spinner from '../spinner/Spinner';
 
 import './singleComic.scss';
-import xMen from '../../resources/img/x-men.png';
 
+const SingleComic = () => {
+    const { id } = useParams()
+    const [comic, setComic] = useState()
+    const { loading, error, getComic } = useMarvelService()
 
-const SingleComic = ({ id }) => {
-    const [comic, setComic] = React.useState(null)
-    const { getComic } = useMarvelService()
-
-    React.useEffect(() => {
+    useEffect(() => {
         onRequest()
     }, [id])
 
     const onRequest = () => {
-        getComic(id).then(setComic)
-        console.log(comic)
+        getComic(id).then(comicLoaded)
     }
 
+    const comicLoaded = (data) => {
+        setComic(data)
+    }
+
+    const spinner = loading ? <Spinner /> : null
+    const errorMessage = error ? <ErrorMessage /> : null
+    const content = !(loading || error || !comic) ? <View data={comic} /> : null
+
+    return (
+        <>
+            {spinner}
+            {errorMessage}
+            {content}
+        </>
+    )
+}
+
+const View = ({ data }) => {
+    const { title, description, thumbnail, pages, language, prices } = data
+    const price = {
+        print: prices.print[0].price,
+    }
     return (
         <div className="single-comic">
-            <img src={xMen} alt="x-men" className="single-comic__img" />
+            <img src={thumbnail} alt={title} className="single-comic__img" />
             <div className="single-comic__info">
-                <h2 className="single-comic__name">X-Men: Days of Future Past</h2>
-                <p className="single-comic__descr">Re-live the legendary first journey into the dystopian future of 2013 - where Sentinels stalk the Earth, and the X-Men are humanity's only hope...until they die! Also featuring the first appearance of Alpha Flight, the return of the Wendigo, the history of the X-Men from Cyclops himself...and a demon for Christmas!?</p>
-                <p className="single-comic__descr">144 pages</p>
-                <p className="single-comic__descr">Language: en-us</p>
-                <div className="single-comic__price">9.99$</div>
+                <h2 className="single-comic__name">{title}</h2>
+                <p className="single-comic__descr">{description}</p>
+                <p className="single-comic__descr">Pages: <strong>{pages}</strong></p>
+                <p className="single-comic__descr">Language: <strong>{language}</strong></p>
+                <div className="single-comic__price">{price.print !== 0 ? `${price.print}$` : `not available in print`}</div>
             </div>
-            <a href="#" className="single-comic__back">Back to all</a>
+            <Link to={'/comics'} className="single-comic__back">Back to all</Link>
         </div>
     )
 }

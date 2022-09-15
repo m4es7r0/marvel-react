@@ -1,8 +1,13 @@
 import SingleComic from '../singleComic/SingleComic'
+import ErrorBoundary from '../errorBoundary/ErrorBoundary'
 
-const Comic = ({ comicID }) => {
+const Comic = ({ id }) => {
+
+
     return (
-        <SingleComic id={comicID} />
+        <ErrorBoundary>
+            <SingleComic data={{}} />
+        </ErrorBoundary>
     )
 }
 

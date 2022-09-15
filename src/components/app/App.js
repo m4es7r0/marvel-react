@@ -2,26 +2,23 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom'
 
 import AppHeader from "../appHeader/AppHeader";
-import { Main, Comics, Comic } from '../pages';
+import { Main, Comics, Comic, NotFound, Character } from '../pages';
 
 const App = () => {
-    const [comicID, setComicID] = React.useState(0)
-
-    const setComic = (id) => {
-        setComicID(id)
-    }
-    console.log(comicID);
-
     return (
         <div className="app">
             <AppHeader />
-            <Routes>
-                <Route path='/'>
-                    <Route index element={<Main setComic={setComic} />} />
-                    <Route path='comics' element={<Comics setComic={setComic} />} />
-                    <Route path='comics/*' element={<Comic comicID={comicID} />} />
-                </Route>
-            </Routes>
+            <main>
+                <Routes>
+                    <Route path='/'>
+                        <Route index element={<Main />} />
+                        <Route path='character' element={<Character />} />
+                        <Route path='comics' element={<Comics />} />
+                        <Route path='comics/:id' element={<Comic />} />
+                        <Route path='*' element={<NotFound />} />
+                    </Route>
+                </Routes>
+            </main>
         </div>
     )
 }

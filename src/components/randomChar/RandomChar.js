@@ -1,6 +1,7 @@
 import React from 'react';
-
 import useMarvelService from '../../services/MarvelService';
+
+import { Link } from "react-router-dom"
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
@@ -30,9 +31,9 @@ const RandomChar = () => {
     const errorMessage = error ? <ErrorMessage /> : null
     const spinner = loading ? <Spinner /> : null
     const randomCharBlock = !(loading || error || !char) ? <View char={char} />
-     : loading ? spinner 
-     : error ? errorMessage 
-     : null;
+        : loading ? spinner
+            : error ? errorMessage
+                : null;
 
     return (
         <div className="randomchar">
@@ -70,12 +71,12 @@ const View = ({ char }) => {
                     {description}
                 </p>
                 <div className="randomchar__btns">
-                    <a href={homepage} className="button button__main">
+                    <a href={homepage} target="_blanck" className="button button__main">
                         <div className="inner">homepage</div>
                     </a>
-                    <a href={wiki} className="button button__secondary">
+                    <Link to="/character" className="button button__secondary">
                         <div className="inner">Wiki</div>
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>

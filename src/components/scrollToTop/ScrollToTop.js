@@ -1,7 +1,7 @@
 import React from 'react'
 
 import './scrollToTop.scss'
-export const ScrollToTop = () => {
+const ScrollToTop = () => {
     const [visible, setVisible] = React.useState(false)
 
     React.useEffect(() => {
@@ -22,6 +22,8 @@ export const ScrollToTop = () => {
     };
 
     return (
-        <button className='toTop' style={{ visibility: visible ? 'visible' : 'hidden' }} onClick={scrollToTop}></button>
+        <button className='toTop' onClick={scrollToTop} style={{ visibility: visible ? 'visible' : 'hidden' }}/>
     )
 }
+
+export default ScrollToTop;

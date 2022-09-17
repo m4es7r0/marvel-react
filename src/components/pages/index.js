@@ -4,4 +4,4 @@ import Comic from "./Comic";
 import NotFound from "./NotFound";
 import Character from "./Character";
 
-export { Main, Comics, Comic, NotFound, Character }
+export  { Main, Comics, Comic, NotFound, Character }

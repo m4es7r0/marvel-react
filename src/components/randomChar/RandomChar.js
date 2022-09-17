@@ -7,7 +7,7 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
 
 import './randomChar.scss';
-import mjolnir from '../../resources/img/mjolnir.png';
+import mjolnir from '../../resources/img/mjolnir.svg';
 
 const RandomChar = () => {
     const [char, setChar] = React.useState(null)

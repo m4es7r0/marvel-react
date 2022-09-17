@@ -1,14 +1,14 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom'
 
-// import { Main, Comics, Comic, NotFound, Character } from '../pages';
+import { Main, Comics } from '../pages';
 import AppHeader from "../appHeader/AppHeader";
 import ScrollToTop from '../scrollToTop/ScrollToTop';
 import Spinner from '../spinner/Spinner';
 
-const Main = lazy(() => import('../pages/Main'))
+// const Main = lazy(() => import('../pages/Main'))
+// const Comics = lazy(() => import('../pages/Comics'))
 const Character = lazy(() => import('../pages/Character'))
-const Comics = lazy(() => import('../pages/Comics'))
 const Comic = lazy(() => import('../pages/Comic'))
 const NotFound = lazy(() => import('../pages/NotFound'))
 

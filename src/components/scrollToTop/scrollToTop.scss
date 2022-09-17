@@ -1,0 +1,13 @@
+.toTop {
+    position: fixed;
+    width: 3rem;
+    height: 3rem;
+    background: url('../../resources/img/upToTop.png') center / cover no-repeat;
+    z-index: 100;
+    bottom: 5px;
+    right: 5px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    transition: all ease .2s;
+}

@@ -8,6 +8,7 @@ import Skeleton from '../skeleton/Skeleton'
 import useMarvelService from '../../services/MarvelService';
 
 import './charInfo.scss';
+import { Link } from 'react-router-dom';
 
 const CharInfo = (props) => {
     const [char, setChar] = React.useState(null)
@@ -104,7 +105,7 @@ const View = ({ char, renderDescription }) => {
                         let comicId = item.resourceURI.replace('http://gateway.marvel.com/v1/public/comics/', '')
                         return (
                             <li key={comicId} className="char__comics-item">
-                                {item.name}
+                                <Link to={`comics/${comicId}`}>{item.name}</Link>
                             </li>
                         )
                     })

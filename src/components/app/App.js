@@ -1,12 +1,15 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom'
 
 import AppHeader from "../appHeader/AppHeader";
 import { Main, Comics, Comic, NotFound, Character } from '../pages';
+import { ScrollToTop } from '../scrollToTop/ScrollToTop';
 
 const App = () => {
+
+
     return (
         <div className="app">
+            <ScrollToTop />
             <AppHeader />
             <main>
                 <Routes>

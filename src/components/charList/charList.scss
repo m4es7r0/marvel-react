@@ -28,6 +28,7 @@
 
     &:focus {
         outline: none;
+
         .card__footer::before {
             height: 100%;
         }
@@ -111,6 +112,30 @@
             z-index: 1000000;
             transform: rotate(45deg);
             background-color: #fff;
+        }
+    }
+
+    &-node {
+        &-enter {
+            opacity: 0;
+            transform: scale(1.1);
+
+            &-active {
+                opacity: 1;
+                transform: scale(1);
+                transition: opacity 450ms, transform 450ms;
+            }
+        }
+
+        &-exit {
+            opacity: 1;
+            transform: scale(1);
+
+            &-active {
+                opacity: 0;
+                transform: scale(0.9);
+                transition: opacity 450ms, transform 450ms;
+            }
         }
     }
 }

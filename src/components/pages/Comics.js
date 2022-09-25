@@ -4,12 +4,12 @@ import ErrorBoundary from '../errorBoundary/ErrorBoundary'
 import ComicsList from '../comicsList/ComicsList'
 import AppBanner from '../appBanner/AppBanner'
 
-const Comics = ({ setComic }) => {
+const Comics = () => {
     return (
         <main>
             <AppBanner />
             <ErrorBoundary>
-                <ComicsList setComic={setComic} />
+                <ComicsList />
             </ErrorBoundary>
         </main>
     )

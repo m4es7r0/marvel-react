@@ -11,7 +11,7 @@
         &.sticky {
             position: sticky;
             top: 25px;
-            
+
         }
 
         &-name {
@@ -30,6 +30,31 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+
+        &-wrapper {
+            &-node {
+                &-enter {
+                    opacity: 0;
+                    transform: rotateX(180deg);
+
+                    &-active {
+                        opacity: 1;
+                        transform: rotateX(0deg);
+                        transition: opacity 400ms, transform 400ms;
+                    }
+                }
+
+                // &-exit {
+                //     opacity: 1;
+
+                //     &-active {
+                //         opacity: 0;
+                //         transform: scale(0.9);
+                //         transition: opacity 400ms, transform 400ms;
+                //     }
+                // }
+            }
+        }
 
         img {
             width: 150px;

@@ -2,7 +2,7 @@ import React from 'react'
 
 import './scrollToTop.scss'
 const ScrollToTop = () => {
-    const [visible, setVisible] = React.useState(false)
+    const [active, setActive] = React.useState(false)
 
     React.useEffect(() => {
         window.addEventListener('scroll', toggleVisible);
@@ -10,8 +10,8 @@ const ScrollToTop = () => {
     }, [])
 
     const toggleVisible = React.useCallback(() => {
-        if (window.pageYOffset > 400) setVisible(true)
-        else setVisible(false)
+        if (window.pageYOffset > 400) setActive(true)
+        else setActive(false)
     }, [])
 
     const scrollToTop = () => {
@@ -22,7 +22,7 @@ const ScrollToTop = () => {
     };
 
     return (
-        <button className='toTop' onClick={scrollToTop} style={{ visibility: visible ? 'visible' : 'hidden' }}/>
+        <button className='toTop' onClick={scrollToTop} style={{ visibility: active ? 'visible' : 'hidden' }} />
     )
 }
 

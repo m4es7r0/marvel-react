@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import useMarvelService from '../../services/MarvelService';
 
@@ -10,7 +11,7 @@ import './comicsList.scss';
 const ComicsList = () => {
     const [comicsList, setComicsList] = useState([])
     const [newItemsLoading, setNewItemsLoading] = useState(true)
-    const [offset, setOffset] = useState(0)
+    const [offset, setOffset] = useState(8)
     const [isEnd, setIsEnd] = useState(false)
 
     const { loading, error, getAllComics } = useMarvelService()
@@ -26,7 +27,7 @@ const ComicsList = () => {
     }, [newItemsLoading])
 
     const onScroll = () => {
-        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
+        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 1) {
             setNewItemsLoading(true);
         }
     }
@@ -52,27 +53,31 @@ const ComicsList = () => {
             let priceStyle = prices.print[0].price !== 0 ? { color: '#ce262c' } : { color: 'unset' }
 
             return (
-                <li
-                    className="comics__item"
-                    key={index}>
-                    <Link to={`${id}`}>
-                        <img src={thumbnail} alt={title} className="comics__item-img" style={imgStyle} />
-                        <div className="comics__item-name">{title}</div>
-                        <div className="comics__item-price">
-                            <p
-                                style={priceStyle}
-                            >
-                                {prices.print[0].price !== 0 ? `${prices.print[0].price}$` : `not available in print`}
-                            </p>
-                        </div>
-                    </Link>
-                </li>
+                <CSSTransition key={index} timeout={450} classNames="comics__item-node">
+                    <li
+                        className="comics__item"
+                    >
+                        <Link to={`${id}`}>
+                            <img src={thumbnail} alt={title} className="comics__item-img" style={imgStyle} />
+                            <div className="comics__item-name">{title}</div>
+                            <div className="comics__item-price">
+                                <p
+                                    style={priceStyle}
+                                >
+                                    {prices.print[0].price !== 0 ? `${prices.print[0].price}$` : `not available in print`}
+                                </p>
+                            </div>
+                        </Link>
+                    </li>
+                </CSSTransition>
             )
         })
 
         return (
             <ul className="comics__grid">
-                {item}
+                <TransitionGroup component={null}>
+                    {item}
+                </TransitionGroup>
             </ul>
         )
     }
@@ -84,9 +89,11 @@ const ComicsList = () => {
         <div className="comics__list">
             {content}
             {newItemsLoading ? <Spinner /> : null}
-            {/* <button className="button button__main button__long" onClick={() => onRequest()}>
-                <div className="inner">load more</div>
-            </button> */}
+            {document.body.offsetHeight < window.innerHeight
+                ? <button className="button button__main button__long" onClick={() => setNewItemsLoading(true)}>
+                    <div className="inner">load more</div>
+                </button>
+                : null}
         </div>
     )
 }

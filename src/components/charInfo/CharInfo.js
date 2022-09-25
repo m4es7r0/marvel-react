@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import ErrorMessage from '../errorMessage/errorMessage';
@@ -8,7 +9,7 @@ import Skeleton from '../skeleton/Skeleton'
 import useMarvelService from '../../services/MarvelService';
 
 import './charInfo.scss';
-import { Link } from 'react-router-dom';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const CharInfo = (props) => {
     const [char, setChar] = React.useState(null)
@@ -55,12 +56,14 @@ const CharInfo = (props) => {
     const content = !(loading || error || !char) ? <View char={char} renderDescription={props.renderDescription} /> : null
 
     return (
-        <div className="char__info" id='sticky' ref={stickyRef}>
-            {skeleton}
-            {spinner}
-            {errorMessage}
-            {content}
-        </div>
+        <TransitionGroup component={null}>
+            <div className="char__info" id='sticky' ref={stickyRef}>
+                {skeleton}
+                {spinner}
+                {errorMessage}
+                {content}
+            </div>
+        </TransitionGroup>
     )
 }
 
@@ -73,45 +76,51 @@ const View = ({ char, renderDescription }) => {
     }
 
     return (
-        <>
-            <div className="char__basics">
-                <img src={thumbnail} alt={name} style={imgStyle} />
-                <div>
-                    <div className="char__info-name">{name}</div>
-                    <div className="char__btns">
-                        <div className='char__btns__wrapper'>
-                            <div>
-                                <a href={homepage} className="button button__main button__info">
-                                    <div className="inner inner__info">homepage</div>
-                                </a>
-                                <a href={wiki} className="button button__secondary button__info">
-                                    <div className="inner inner__info">Wiki</div>
-                                </a>
+        <CSSTransition timeout={400} classNames="char__basics-wrapper-node" in={char}>
+            <>
+                <div className="char__basics-wrapper">
+                    <div className="char__basics">
+                        <img src={thumbnail} alt={name} style={imgStyle} />
+                        <div>
+                            <div className="char__info-name">{name}</div>
+                            <div className="char__btns">
+                                <div className='char__btns__wrapper'>
+                                    <div>
+                                        <a href={homepage} className="button button__main button__info">
+                                            <div className="inner inner__info">homepage</div>
+                                        </a>
+                                        <a href={wiki} className="button button__secondary button__info">
+                                            <div className="inner inner__info">Wiki</div>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div className="char__descr">
+                        {renderDescription(description, name)}
+                    </div>
                 </div>
-            </div>
-            <div className="char__descr">
-                {renderDescription(description, name)}
-            </div>
-            <div className="char__comics">Comics:</div>
-            <ul className="char__comics-list">
-                {comics.length > 0 ? null : <p>There is no comics with <span style={{ fontWeight: '600' }}>{name}</span></p>}
-                {
-                    comics.map((item, i) => {
-                        // eslint-disable-next-line
-                        if (i >= 6) return;
-                        let comicId = item.resourceURI.replace('http://gateway.marvel.com/v1/public/comics/', '')
-                        return (
-                            <li key={comicId} className="char__comics-item">
-                                <Link to={`comics/${comicId}`}>{item.name}</Link>
-                            </li>
-                        )
-                    })
-                }
-            </ul>
-        </>
+                <div className="char__comics">Comics:</div>
+                <ul className="char__comics-list">
+                    {comics.length > 0
+                        ? null
+                        : <p>There is no comics with <span style={{ fontWeight: '600' }}>{name}</span></p>}
+                    {
+                        comics.map((item, i) => {
+                            // eslint-disable-next-line
+                            if (i >= 6) return;
+                            let comicId = item.resourceURI.replace('http://gateway.marvel.com/v1/public/comics/', '')
+                            return (
+                                <li key={comicId} className="char__comics-item">
+                                    <Link to={`comics/${comicId}`}>{item.name}</Link>
+                                </li>
+                            )
+                        })
+                    }
+                </ul>
+            </>
+        </CSSTransition>
     )
 }
 

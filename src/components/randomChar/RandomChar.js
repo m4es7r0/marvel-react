@@ -8,6 +8,7 @@ import ErrorMessage from '../errorMessage/errorMessage';
 
 import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.svg';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const RandomChar = () => {
     const [char, setChar] = React.useState(null)
@@ -30,28 +31,32 @@ const RandomChar = () => {
 
     const errorMessage = error ? <ErrorMessage /> : null
     const spinner = loading ? <Spinner /> : null
-    const randomCharBlock = !(loading || error || !char) ? <View char={char} />
+    const randomCharBlock = !(loading || error || !char) ? <CSSTransition timeout={400} classNames={'randomchar__block-node'}><View char={char} /></CSSTransition>
         : loading ? spinner
             : error ? errorMessage
                 : null;
 
     return (
-        <div className="randomchar">
-            {randomCharBlock}
-            <div className="randomchar__static">
-                <p className="randomchar__title">
-                    Random character for today!<br />
-                    Do you want to get to know him better?
-                </p>
-                <p className="randomchar__title">
-                    Or choose another one
-                </p>
-                <button className="button button__main" disabled={loading}>
-                    <div className="inner" onClick={() => updChar()}>try it</div>
-                </button>
-                <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
+        <CSSTransition timeout={450} classNames={"randomchar-node"} in={char}>
+            <div className="randomchar">
+                <TransitionGroup component={null}>
+                    {randomCharBlock}
+                </TransitionGroup>
+                <div className="randomchar__static">
+                    <p className="randomchar__title">
+                        Random character for today!<br />
+                        Do you want to get to know him better?
+                    </p>
+                    <p className="randomchar__title">
+                        Or choose another one
+                    </p>
+                    <button className="button button__main" disabled={loading}>
+                        <div className="inner" onClick={() => updChar()}>try it</div>
+                    </button>
+                    <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
+                </div>
             </div>
-        </div>
+        </CSSTransition>
     )
 }
 

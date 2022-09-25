@@ -22,7 +22,7 @@ const ScrollToTop = () => {
     };
 
     return (
-        <button className='toTop' onClick={scrollToTop} style={{ visibility: active ? 'visible' : 'hidden' }} />
+        <button className='toTop' onClick={scrollToTop} style={{ opacity: active ? "1" : '0', visibility: active ? 'visible' : 'hidden' }} />
     )
 }
 

@@ -9,5 +9,6 @@
     cursor: pointer;
     border: none;
     background-color: transparent;
-    transition: all ease .2s;
+    visibility: hidden;
+    transition: all .35s ease-in-out;
 }

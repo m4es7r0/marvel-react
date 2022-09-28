@@ -61,7 +61,7 @@ const RandomChar = () => {
 }
 
 const View = ({ char }) => {
-    const { thumbnail, name, description, homepage, wiki } = char
+    const { thumbnail, id, name, description, wiki } = char
     let imgStyle = { objectFit: '' }
     if (thumbnail.includes('image_not_available') || thumbnail.includes('4c002e0305708')) {
         imgStyle = { objectFit: 'unset' }
@@ -76,12 +76,12 @@ const View = ({ char }) => {
                     {description}
                 </p>
                 <div className="randomchar__btns">
-                    <a href={homepage} target="_blanck" className="button button__main">
+                    <Link to={`/character/${id}`} className="button button__main">
                         <div className="inner">homepage</div>
-                    </a>
-                    <Link to="/character" className="button button__secondary">
-                        <div className="inner">Wiki</div>
                     </Link>
+                    <a href={wiki} target="_blank" className="button button__secondary">
+                        <div className="inner">Wiki</div>
+                    </a>
                 </div>
             </div>
         </div>

@@ -18,6 +18,17 @@
         column-gap: 25px;
         row-gap: 25px;
     }
+
+    &__sidebar {
+        display: flex;
+        flex-direction: column-reverse;
+        position: sticky;
+        top: 25px;
+
+        .char__search-form {
+            margin-bottom: 25px;
+        }
+    }
 }
 
 .card {

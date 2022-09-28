@@ -6,6 +6,7 @@ import CharInfo from '../charInfo/CharInfo'
 import CharList from '../charList/CharList'
 
 import decoration from '../../resources/img/vision.png';
+import FormSearch from '../form/FormSearch'
 
 const Main = () => {
     const [selectedChar, setChar] = React.useState(null);
@@ -35,11 +36,16 @@ const Main = () => {
                 <ErrorBoundary>
                     <CharList onCharSelected={onCharSelected} />
                 </ErrorBoundary>
-                <ErrorBoundary>
-                    <CharInfo
-                        charId={selectedChar}
-                        renderDescription={(description, name) => transformDescriptonForCharInfo(description, name)} />
-                </ErrorBoundary>
+                <div className='char__sidebar'>
+                    <ErrorBoundary>
+                        <CharInfo
+                            charId={selectedChar}
+                            renderDescription={(description, name) => transformDescriptonForCharInfo(description, name)} />
+                    </ErrorBoundary>
+                    <ErrorBoundary>
+                        <FormSearch />
+                    </ErrorBoundary>
+                </div>
             </div>
             {/* <img className="bg-decoration" src={decoration} alt="vision" /> */}
         </main>

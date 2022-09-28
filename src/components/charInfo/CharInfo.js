@@ -98,7 +98,7 @@ const View = ({ char, renderDescription }) => {
                         </div>
                     </div>
                     <div className="char__descr">
-                        {renderDescription(description, name)}
+                        {/* {renderDescription(description, name)} убрал описание персонажа */}
                     </div>
                 </div>
                 <div className="char__comics">Comics:</div>

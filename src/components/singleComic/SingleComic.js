@@ -9,20 +9,12 @@ import './singleComic.scss';
 
 const SingleComic = () => {
     const { id } = useParams()
-    const [comic, setComic] = useState()
+    const [comic, setComic] = useState(null)
     const { loading, error, getComic } = useMarvelService()
 
     useEffect(() => {
-        onRequest()
+        getComic(id).then(setComic)
     }, [id])
-
-    const onRequest = () => {
-        getComic(id).then(comicLoaded)
-    }
-
-    const comicLoaded = (data) => {
-        setComic(data)
-    }
 
     const spinner = loading ? <Spinner /> : null
     const errorMessage = error ? <ErrorMessage /> : null

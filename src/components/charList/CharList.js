@@ -112,7 +112,11 @@ const CharList = (props) => {
             {content}
             {newItemsLoading ? <Spinner /> : null}
             {document.body.offsetHeight < window.innerHeight
-                ? <button className="button button__main button__long" onClick={() => setNewItemsLoading(true)}>
+                ? <button
+                    className="button button__main button__long"
+                    onClick={() => setNewItemsLoading(true)}
+                    disabled={newItemsLoading}
+                >
                     <div className="inner">load more</div>
                 </button>
                 : null}

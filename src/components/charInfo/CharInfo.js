@@ -1,20 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
-import ErrorMessage from '../errorMessage/errorMessage';
-import Spinner from '../spinner/Spinner';
-import Skeleton from '../skeleton/Skeleton'
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { Link } from 'react-router-dom';
 
 import useMarvelService from '../../services/MarvelService';
+import { setContent } from '../../utils/setContent';
 
 import './charInfo.scss';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const CharInfo = (props) => {
     const [char, setChar] = React.useState(null)
 
-    const { error, loading, getCharacter } = useMarvelService()
+    const { process, setProcess, getCharacter } = useMarvelService()
 
     React.useEffect(() => {
         updChar()
@@ -48,27 +45,20 @@ const CharInfo = (props) => {
         if (!props.charId) return
         getCharacter(props.charId)
             .then(onLoaded)
+            .then(() => setProcess('confirmed'))
     }
-
-    const errorMessage = error ? <ErrorMessage paragraph={false} /> : null
-    const spinner = loading ? <Spinner /> : null
-    const skeleton = char || errorMessage || spinner ? null : <Skeleton />
-    const content = !(loading || error || !char) ? <View char={char} renderDescription={props.renderDescription} /> : null
 
     return (
         <TransitionGroup component={null}>
             <div className="char__info" id='sticky' ref={stickyRef}>
-                {skeleton}
-                {spinner}
-                {errorMessage}
-                {content}
+                {setContent(process, char, View)}
             </div>
         </TransitionGroup>
     )
 }
 
-const View = ({ char, renderDescription }) => {
-    const { name, description, thumbnail, wiki, homepage, comics } = char
+const View = ({ data, renderDescription }) => {
+    const { name, thumbnail, wiki, homepage, comics } = data
 
     let imgStyle = { objectFit: '' }
     if (thumbnail.includes('image_not_available') || thumbnail.includes('4c002e0305708')) {
@@ -76,7 +66,7 @@ const View = ({ char, renderDescription }) => {
     }
 
     return (
-        <CSSTransition timeout={400} classNames="char__basics-wrapper-node" in={char}>
+        <CSSTransition timeout={400} classNames="char__basics-wrapper-node" in={data}>
             <>
                 <div className="char__basics-wrapper">
                     <div className="char__basics">

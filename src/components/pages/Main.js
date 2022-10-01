@@ -1,11 +1,11 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 
 import ErrorBoundary from '../errorBoundary/ErrorBoundary'
 import RandomChar from '../randomChar/RandomChar'
 import CharInfo from '../charInfo/CharInfo'
 import CharList from '../charList/CharList'
 
-import decoration from '../../resources/img/vision.png';
 import FormSearch from '../form/FormSearch'
 
 const Main = () => {
@@ -28,27 +28,32 @@ const Main = () => {
     }
 
     return (
-        <main>
-            <ErrorBoundary>
-                <RandomChar />
-            </ErrorBoundary>
-            <div className="char__content">
+        <>
+            <Helmet>
+                <meta name='description' content='Marvel Information Resource' />
+                <title>Marvel Information Resource</title>
+            </Helmet>
+            <main>
                 <ErrorBoundary>
-                    <CharList onCharSelected={onCharSelected} />
+                    <RandomChar />
                 </ErrorBoundary>
-                <div className='char__sidebar'>
+                <div className="char__content">
                     <ErrorBoundary>
-                        <CharInfo
-                            charId={selectedChar}
-                            renderDescription={(description, name) => transformDescriptonForCharInfo(description, name)} />
+                        <CharList onCharSelected={onCharSelected} />
                     </ErrorBoundary>
-                    <ErrorBoundary>
-                        <FormSearch />
-                    </ErrorBoundary>
+                    <div className='char__sidebar'>
+                        <ErrorBoundary>
+                            <CharInfo
+                                charId={selectedChar}
+                                renderDescription={(description, name) => transformDescriptonForCharInfo(description, name)} />
+                        </ErrorBoundary>
+                        <ErrorBoundary>
+                            <FormSearch />
+                        </ErrorBoundary>
+                    </div>
                 </div>
-            </div>
-            {/* <img className="bg-decoration" src={decoration} alt="vision" /> */}
-        </main>
+            </main>
+        </>
     )
 }
 

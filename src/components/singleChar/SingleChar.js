@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import { Link, useParams } from 'react-router-dom'
 
 import useMarvelService from '../../services/MarvelService';
@@ -19,6 +20,10 @@ const SingleChar = () => {
 
     return (
         <>
+            <Helmet>
+                <meta name='description' content={`page of ${char.name}`} />
+                <title>{`Marvel Information | ${char.name}`}</title>
+            </Helmet>
             {error ? <ErrorMessage /> : <>{loading
                 ? <Spinner />
                 : <div className="single-char">

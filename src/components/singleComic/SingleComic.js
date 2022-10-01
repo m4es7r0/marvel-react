@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import { Link, useParams } from 'react-router-dom'
 
 import useMarvelService from '../../services/MarvelService';
@@ -21,7 +22,7 @@ const SingleComic = () => {
     const content = !(loading || error || !comic) ? <View data={comic} /> : null
 
     return (
-        <>
+        <>  
             {spinner}
             {errorMessage}
             {content}
@@ -36,6 +37,10 @@ const View = ({ data }) => {
     }
     return (
         <div className="single-comic">
+            <Helmet>
+                <meta name='description' content={`comic of ${title}`} />
+                <title>{`Marvel Information | ${title}`}</title>
+            </Helmet>
             <img src={thumbnail} alt={title} className="single-comic__img" />
             <div className="single-comic__info">
                 <h2 className="single-comic__name">{title}</h2>

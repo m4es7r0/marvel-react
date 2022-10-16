@@ -1,23 +1,23 @@
 import { useState, useRef, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
 
-import useMarvelService from '../../services/MarvelService';
+import { fetchHeroes, selectAll } from '../../redux/slices/heroSlice'
 
 import './charList.scss';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const CharList = (props) => {
-    const [charList, setCharList] = useState([])
-    const [newItemsLoading, setNewItemsLoading] = useState(true)
+    const dispatch = useDispatch()
+    const status = useSelector(({ heroes }) => heroes.heroesLoadingStatus);
+    const heroes = useSelector(({ heroes }) => heroes.heroesList)
+
     const [offset, setOffset] = useState(210)
-    const [isEnd, setIsEnd] = useState(false)
 
     const node = useRef()
-
-    const { loading, error, getAllCharacters } = useMarvelService()
 
     useEffect(() => {
         window.addEventListener('scroll', onScroll);
@@ -25,32 +25,24 @@ const CharList = (props) => {
     }, [])
 
     useEffect(() => {
-        if (newItemsLoading && !isEnd) onRequest()
+        dispatch(fetchHeroes(offset))
         // eslint-disable-next-line
-    }, [newItemsLoading])
+    }, [offset])
+
+    const upd = () => {
+        setOffset(state => state + 9)
+    }
 
     const onScroll = () => {
         if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 1) {
-            setNewItemsLoading(true);
+            upd()
         }
-    }
-    const onRequest = () => {
-        loading ? setNewItemsLoading(false) : setNewItemsLoading(true);
-        getAllCharacters(offset)
-            .then(listLoaded);
     }
 
     const itemsRef = useRef([])
 
     const focusOnItem = (id) => {
         itemsRef[id].focus()
-    }
-
-    const listLoaded = (newCharList) => {
-        setNewItemsLoading(false);
-        setCharList((charList) => [...charList, ...newCharList]);
-        setOffset((offset) => offset + 9);
-        setIsEnd(newCharList.length < 9 ? true : false);
     }
 
     const renderItems = (arr) => {
@@ -95,27 +87,25 @@ const CharList = (props) => {
         })
 
         return (
-            <ul className="char__grid">
-                <TransitionGroup component={null}>
-                    {items}
-                </TransitionGroup>
-            </ul>
+            <TransitionGroup component={"ul"} className={"char__grid"}>
+                {items}
+            </TransitionGroup>
         )
     }
 
 
-    const errorMessage = error ? <ErrorMessage paragraph={true} /> : null
-    const content = error ? errorMessage : renderItems(charList)
+    const errorMessage = status === 'rejected' ? <ErrorMessage paragraph={true} /> : null
+    const content = status === 'rejected' ? errorMessage : renderItems(heroes)
 
     return (
         <div className="char__list" ref={node}>
             {content}
-            {newItemsLoading ? <Spinner /> : null}
+            {status === 'pending' ? <Spinner /> : null}
             {document.body.offsetHeight < window.innerHeight
                 ? <button
                     className="button button__main button__long"
-                    onClick={() => setNewItemsLoading(true)}
-                    disabled={newItemsLoading}
+                    onClick={() => setOffset(state => state + 9)}
+                    disabled={status === 'pending'}
                 >
                     <div className="inner">load more</div>
                 </button>

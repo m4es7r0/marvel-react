@@ -5,23 +5,22 @@ import PropTypes from 'prop-types';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
 
-import { fetchHeroes, selectAll } from '../../redux/slices/heroSlice'
+import { fetchHeroes } from '../../redux/actions/fetchAction';
 
-import './charList.scss';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import './charList.scss';
 
 const CharList = (props) => {
     const dispatch = useDispatch()
-    const status = useSelector(({ heroes }) => heroes.heroesLoadingStatus);
+    const status = useSelector(({ heroes }) => heroes.loadingStatus);
     const heroes = useSelector(({ heroes }) => heroes.heroesList)
 
     const [offset, setOffset] = useState(210)
 
-    const node = useRef()
-
     useEffect(() => {
         window.addEventListener('scroll', onScroll);
         return () => window.removeEventListener('scroll', onScroll);
+        // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
@@ -29,14 +28,11 @@ const CharList = (props) => {
         // eslint-disable-next-line
     }, [offset])
 
-    const upd = () => {
-        setOffset(state => state + 9)
-    }
-
     const onScroll = () => {
-        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 1) {
-            upd()
+        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
+            setOffset(state => state + 9)
         }
+        return
     }
 
     const itemsRef = useRef([])
@@ -98,10 +94,10 @@ const CharList = (props) => {
     const content = status === 'rejected' ? errorMessage : renderItems(heroes)
 
     return (
-        <div className="char__list" ref={node}>
+        <div className="char__list">
             {content}
             {status === 'pending' ? <Spinner /> : null}
-            {document.body.offsetHeight < window.innerHeight
+            {document.body.offsetHeight <= window.innerHeight
                 ? <button
                     className="button button__main button__long"
                     onClick={() => setOffset(state => state + 9)}

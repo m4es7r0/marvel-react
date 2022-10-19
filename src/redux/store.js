@@ -6,7 +6,9 @@ const store = configureStore({
     reducer: {
         heroes: heroesReducer
     },
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(transformRespose),
+    middleware: getDefaultMiddleware => (
+        [...getDefaultMiddleware().concat(transformRespose)]
+    ),
     devTools: true
 })
 

@@ -1,4 +1,4 @@
-export const _transformCharacter = (char) => ({
+const _transformCharacter = (char) => ({
     id: char.id,
     thumbnail: `${char.thumbnail.path}.${char.thumbnail.extension}`,
     name: char.name,
@@ -8,7 +8,7 @@ export const _transformCharacter = (char) => ({
     wiki: char.urls[1].url,
 })
 
-export const _transformComic = (comic) => ({
+const _transformComic = (comic) => ({
     id: comic.id,
     digitalId: comic.digitalId,
     title: comic.title,
@@ -22,17 +22,15 @@ export const _transformComic = (comic) => ({
     language: comic.textObjects.language || 'en-us'
 })
 
-export const _transformData = (data) => {
+const _transformData = (data) => {
     if (data.description.length === 0) return { ...data, description: `There is no description for ${data.name}` }
     if (data.description.length >= 213) return { ...data, description: data.description.slice(0, 200) + '...' }
     return data
 }
 
 const transformRespose = store => next => action => {
-    // if (action.type === 'heroes/fetchHeroes/fulfilled') {
-    //     action.payload = action.payload.results.map(_transformCharacter)
-    //     return next(action)
-    // }
+    if (action.type === 'heroes/fetchHeroes/fulfilled') action.payload = action.payload.data.results.map(_transformCharacter)
+    if (action.type === 'heroes/fetchSingleHero/fulfilled') action.payload = _transformData(_transformCharacter(action.payload.data.results[0]))
     return next(action)
 }
 

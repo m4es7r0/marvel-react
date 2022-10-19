@@ -1,26 +1,15 @@
-import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit"
-
-import { _transformCharacter } from "../middlewares/transformDataMiddleware"
-
-const _apiBase = 'https://gateway.marvel.com:443/v1/public/'
-const _apiKey = '90d8837848db3f5da67d76fb430612fd'
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit"
+import { fetchHeroes, fetchSingleHero, fetchSingleHeroByName } from "../actions/fetchAction"
 
 const heroesAdapter = createEntityAdapter()
-
-export const fetchHeroes = createAsyncThunk(
-    'heroes/fetchHeroes',
-    async (prop, api) => {
-        const res = await fetch(`${_apiBase}characters?limit=9&offset=${prop}&apikey=${_apiKey}`)
-            .then(res => res.json())
-        return res.data.results.map(_transformCharacter)
-    }
-)
 
 const heroesSlice = createSlice({
     name: 'heroes',
     initialState: heroesAdapter.getInitialState({
-        heroesLoadingStatus: 'idle',
-        heroesList: []
+        loadingStatus: 'idle',
+        HeroloadingStatus: 'waiting',
+        heroesList: [],
+        hero: null
     }),
     reducers: {
         getMoreHeroes: (state, action) => {
@@ -32,12 +21,18 @@ const heroesSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchHeroes.pending, (state) => { state.heroesLoadingStatus = 'pending' })
-            .addCase(fetchHeroes.rejected, (state) => { state.heroesLoadingStatus = 'rejected' })
+            .addCase(fetchHeroes.pending, (state) => { state.loadingStatus = 'pending' })
+            .addCase(fetchHeroes.rejected, (state) => { state.loadingStatus = 'rejected' })
             .addCase(fetchHeroes.fulfilled, (state, action) => {
-                state.heroesLoadingStatus = 'idle'
+                state.loadingStatus = 'idle'
                 state.heroesList.push(...action.payload)
                 // heroesAdapter.setAll(state, action.payload)
+            })
+            .addCase(fetchSingleHero.pending, (state) => {state.HeroloadingStatus = 'pending'})
+            .addCase(fetchSingleHero.rejected, (state) => { state.HeroloadingStatus = 'rejected' })
+            .addCase(fetchSingleHero.fulfilled, (state, action) => {
+                state.HeroloadingStatus = 'idle'
+                state.hero = action.payload
             })
             .addDefaultCase(() => { })
     }

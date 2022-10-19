@@ -1,57 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { Link } from 'react-router-dom';
 
-import useMarvelService from '../../services/MarvelService';
-import { setContent } from '../../utils/setContent';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSingleHero } from '../../redux/actions/fetchAction';
+
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+
+import Spinner from '../spinner/Spinner';
+import ErrorMessage from '../errorMessage/errorMessage';
+import Skeleton from '../skeleton/Skeleton';
 
 import './charInfo.scss';
 
 const CharInfo = (props) => {
-    const [char, setChar] = React.useState(null)
-
-    const { process, setProcess, getCharacter } = useMarvelService()
-
-    React.useEffect(() => {
-        updChar()
-        window.addEventListener('scroll', positionStickyByScroll)
-        return () => window.removeEventListener('scroll', positionStickyByScroll)
-        // eslint-disable-next-line
-    }, [])
+    const dispatch = useDispatch()
+    const char = useSelector(({ heroes }) => heroes.hero)
+    const status = useSelector(({ heroes }) => heroes.HeroloadingStatus)
 
     React.useEffect(() => {
-        if (props.charId) {
-            updChar()
-        }
+        if (props.charId) dispatch(fetchSingleHero(props.charId))
         // eslint-disable-next-line
     }, [props.charId])
 
-    const stickyRef = React.useRef()
-
-    const positionStickyByScroll = React.useCallback(() => {
-        if (window.pageYOffset >= stickyRef.current.offsetHeight - 50) {
-            stickyRef.current.classList.add('sticky')
-        } else {
-            stickyRef.current.classList.remove('sticky')
-        }
-    }, [])
-
-    const onLoaded = (char) => {
-        setChar(char)
-    }
-
-    const updChar = () => {
-        if (!props.charId) return
-        getCharacter(props.charId)
-            .then(onLoaded)
-            .then(() => setProcess('confirmed'))
-    }
-
     return (
         <TransitionGroup component={null}>
-            <div className="char__info" id='sticky' ref={stickyRef}>
-                {setContent(process, char, View)}
+            <div className="char__info" id='sticky'>
+                {status === 'pending' ? <Spinner /> : null}
+                {status === 'rejected' ? <ErrorMessage paragraph={false} /> : null}
+                {status === 'idle' ? <View data={char} /> : null}
+                {status === 'waiting' ? <Skeleton /> : null}
             </div>
         </TransitionGroup>
     )

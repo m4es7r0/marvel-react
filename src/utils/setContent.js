@@ -6,11 +6,11 @@ export const setContent = (process, data, Component) => {
     switch (process) {
         case 'waiting':
             return <Skeleton />
-        case 'error':
+        case 'rejected':
             return <ErrorMessage paragraph={false} />
-        case 'loading':
+        case 'pending':
             return <Spinner />
-        case 'confirmed':
+        case 'idle':
             return <Component data={data} />
         default: throw new Error('Unexpected process state')
     }

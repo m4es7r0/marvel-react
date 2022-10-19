@@ -7,11 +7,8 @@ import { fetchSingleHero } from '../../redux/actions/fetchAction';
 
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/errorMessage';
-import Skeleton from '../skeleton/Skeleton';
-
 import './charInfo.scss';
+import { setContent } from '../../utils/setContent';
 
 const CharInfo = (props) => {
     const dispatch = useDispatch()
@@ -26,10 +23,7 @@ const CharInfo = (props) => {
     return (
         <TransitionGroup component={null}>
             <div className="char__info" id='sticky'>
-                {status === 'pending' ? <Spinner /> : null}
-                {status === 'rejected' ? <ErrorMessage paragraph={false} /> : null}
-                {status === 'idle' ? <View data={char} /> : null}
-                {status === 'waiting' ? <Skeleton /> : null}
+                {setContent(status, char, View)}
             </div>
         </TransitionGroup>
     )

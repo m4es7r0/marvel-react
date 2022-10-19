@@ -25,7 +25,7 @@ const RandomChar = () => {
     const updChar = () => {
         getCharacter((Math.random() * (1011420 - 1011003) + 1011003).toFixed(0))
             .then(onCharLoaded)
-            .then(() => setProcess('confirmed'))
+            .then(() => setProcess('idle'))
     }
 
     return (

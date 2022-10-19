@@ -7,7 +7,7 @@ export const useHttp = () => {
 
     const request = React.useCallback(async (url, method = "GET", body = null, headers = { "Content-Type": "aplication/json" }) => {
         setLoading(true)
-        setProcess('loading')
+        setProcess('pending')
 
         try {
             const response = await fetch(url, { method, body, headers })
@@ -20,7 +20,7 @@ export const useHttp = () => {
         } catch (e) {
             setLoading(false)
             setError(e.message)
-            setProcess('error')
+            setProcess('rejected')
             throw e
         }
         // eslint-disable-next-line
@@ -28,7 +28,7 @@ export const useHttp = () => {
 
     const clearError = React.useCallback(() => {
         setError(null)
-        setProcess('loading')
+        setProcess('pending')
     }, [])
 
     return { loading, request, error, process, setProcess }

@@ -12,8 +12,8 @@ import { setContent } from '../../utils/setContent';
 
 const CharInfo = (props) => {
     const dispatch = useDispatch()
-    const char = useSelector(({ heroes }) => heroes.hero)
-    const status = useSelector(({ heroes }) => heroes.HeroloadingStatus)
+    const char = useSelector(({ heroes }) => heroes.selectedHero)
+    const status = useSelector(({ heroes }) => heroes.selectedHeroStatus)
 
     React.useEffect(() => {
         if (props.charId) dispatch(fetchSingleHero(props.charId))

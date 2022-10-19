@@ -6,10 +6,10 @@ const heroesAdapter = createEntityAdapter()
 const heroesSlice = createSlice({
     name: 'heroes',
     initialState: heroesAdapter.getInitialState({
-        loadingStatus: 'idle',
-        HeroloadingStatus: 'waiting',
+        heroesListStatus: 'idle',
+        selectedHeroStatus: 'waiting',
         heroesList: [],
-        hero: null
+        selectedHero: null
     }),
     reducers: {
         getMoreHeroes: (state, action) => {
@@ -21,18 +21,18 @@ const heroesSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchHeroes.pending, (state) => { state.loadingStatus = 'pending' })
-            .addCase(fetchHeroes.rejected, (state) => { state.loadingStatus = 'rejected' })
+            .addCase(fetchHeroes.pending, (state) => { state.heroesListStatus = 'pending' })
+            .addCase(fetchHeroes.rejected, (state) => { state.heroesListStatus = 'rejected' })
             .addCase(fetchHeroes.fulfilled, (state, action) => {
-                state.loadingStatus = 'idle'
+                state.heroesListStatus = 'idle'
                 state.heroesList.push(...action.payload)
                 // heroesAdapter.setAll(state, action.payload)
             })
-            .addCase(fetchSingleHero.pending, (state) => {state.HeroloadingStatus = 'pending'})
-            .addCase(fetchSingleHero.rejected, (state) => { state.HeroloadingStatus = 'rejected' })
+            .addCase(fetchSingleHero.pending, (state) => {state.selectedHeroStatus = 'pending'})
+            .addCase(fetchSingleHero.rejected, (state) => { state.selectedHeroStatus = 'rejected' })
             .addCase(fetchSingleHero.fulfilled, (state, action) => {
-                state.HeroloadingStatus = 'idle'
-                state.hero = action.payload
+                state.selectedHeroStatus = 'idle'
+                state.selectedHero = action.payload
             })
             .addDefaultCase(() => { })
     }

@@ -12,7 +12,7 @@ import './charList.scss';
 
 const CharList = (props) => {
     const dispatch = useDispatch()
-    const status = useSelector(({ heroes }) => heroes.loadingStatus);
+    const status = useSelector(({ heroes }) => heroes.heroesListStatus);
     const heroes = useSelector(({ heroes }) => heroes.heroesList)
 
     const [offset, setOffset] = useState(210)

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react"
 import { useFormik } from "formik"
 import { Link } from "react-router-dom"
 import * as yup from 'yup'
-import useMarvelService from "../../services/MarvelService"
+
+import { useLazyGetHeroByNameQuery } from "../../redux/api/marvel.api"
 
 import ErrorMessage from "../errorMessage/errorMessage"
 
@@ -10,7 +11,7 @@ import './formSearch.scss'
 
 export default function FormSearch() {
     const [char, setChar] = useState(null)
-    const { loading, error, getCharacterByName } = useMarvelService()
+    const [fetch, { isLoading, isFetching, isError }] = useLazyGetHeroByNameQuery()
 
     const formik = useFormik({
         initialValues: { charName: '' },
@@ -20,16 +21,21 @@ export default function FormSearch() {
         validateOnChange: false,
         validateOnBlur: false,
         onSubmit: (values) => {
-            getCharacterByName(values.charName)
-                .then(setChar)
+            fetch(values.charName)
+                .then(res => setChar(res.data))
         }
     })
 
+
     useEffect(() => {
-        if (formik.values.charName === '') setChar(null)
+        if (formik.values.charName === '') {
+            formik.handleReset()
+            setChar(null)
+        }
+        // eslint-disable-next-line
     }, [formik.values.charName])
 
-    const errorMessage = error ? <div className="char__search-critical-error"><ErrorMessage /></div> : null;
+    const errorMessage = isError ? <div className="char__search-critical-error"><ErrorMessage /></div> : null;
     const results = !char ? null : char.length > 0 ?
         <div className="char__search-wrapper">
             <div className="char__search-success">There is! Visit "{char[0].name}" page?</div>
@@ -57,7 +63,7 @@ export default function FormSearch() {
                     <button
                         type='submit'
                         className="button button__main"
-                        disabled={loading}>
+                        disabled={isLoading || isFetching}>
                         <div className="inner">find</div>
                     </button>
                 </div>

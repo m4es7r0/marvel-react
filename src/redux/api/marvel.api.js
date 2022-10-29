@@ -39,7 +39,7 @@ const marvel = createApi({
                 }
             }),
             transformResponse: ({ data }) => {
-                return data.results[0]
+                return data.results
             }
         })
     }),

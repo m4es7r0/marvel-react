@@ -1,38 +1,45 @@
 import { useState, useRef, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
 
-import { fetchHeroes } from '../../redux/actions/fetchAction';
+import { useLazyGetHeroesQuery } from '../../redux/api/charlist.api';
 
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './charList.scss';
 
 const CharList = (props) => {
-    const dispatch = useDispatch()
-    const status = useSelector(({ heroes }) => heroes.heroesListStatus);
-    const heroes = useSelector(({ heroes }) => heroes.heroesList)
-
     const [offset, setOffset] = useState(210)
+    const [fetch, { data = [], isError, isLoading, isFetching }] = useLazyGetHeroesQuery()
+
+    const [heroes, setHeroes] = useState([])
 
     useEffect(() => {
-        window.addEventListener('scroll', onScroll);
-        return () => window.removeEventListener('scroll', onScroll);
+        // first query
+        window.addEventListener('scroll', onScroll)
+        fetch(offset).then(res => setHeroes(res.data))
+
+        return () => window.removeEventListener('scroll', onScroll)
+
         // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
-        dispatch(fetchHeroes(offset))
+        // upd heroes
+        fetch(offset + 9).unwrap()
+        setHeroes(state => [...state, ...data])
+
         // eslint-disable-next-line
     }, [offset])
 
     const onScroll = () => {
-        if (window.innerHeight + window.pageYOffset === document.body.offsetHeight && status !== 'pending') {
-            setOffset(state => state + 10)
+        let scrolled = window.innerHeight + window.pageYOffset
+        let pageHeight = document.body.clientHeight - 20
+
+        if (scrolled >= pageHeight) {
+            setOffset(state => state + 9)
         }
-        return
     }
 
     const itemsRef = useRef([])
@@ -90,18 +97,18 @@ const CharList = (props) => {
     }
 
 
-    const errorMessage = status === 'rejected' ? <ErrorMessage paragraph={true} /> : null
-    const content = status === 'rejected' ? errorMessage : renderItems(heroes)
+    const errorMessage = isError ? <ErrorMessage paragraph={true} /> : null
+    const content = isError ? errorMessage : renderItems(heroes)
 
     return (
         <div className="char__list">
             {content}
-            {status === 'pending' ? <Spinner /> : null}
+            {isLoading || isFetching ? <Spinner /> : null}
             {document.body.offsetHeight <= window.innerHeight
                 ? <button
                     className="button button__main button__long"
                     onClick={() => setOffset(state => state + 9)}
-                    disabled={status === 'pending'}
+                    disabled={isFetching}
                 >
                     <div className="inner">load more</div>
                 </button>

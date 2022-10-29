@@ -1,67 +1,61 @@
 import React from 'react';
-import useMarvelService from '../../services/MarvelService';
+import { useSelector } from 'react-redux';
+import { useLazyGetSingleHeroQuery } from '../../redux/api/marvel.api'
 
 import { Link } from "react-router-dom"
-
-import './randomChar.scss';
-import mjolnir from '../../resources/img/mjolnir.svg';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+
 import { setContent } from '../../utils/setContent';
 
-const RandomChar = () => {
-    const [char, setChar] = React.useState(null)
+import mjolnir from '../../resources/img/mjolnir.svg';
+import './randomChar.scss';
+import ErrorMessage from '../errorMessage/errorMessage';
 
-    const { loading, process, setProcess, getCharacter } = useMarvelService()
+const RandomChar = () => {
+    const [fetch, { isLoading, isFetching, isError }] = useLazyGetSingleHeroQuery()
+    const status = useSelector(({ heroes }) => heroes.randomHeroStatus)
+    const [char, setChar] = React.useState({})
 
     React.useEffect(() => {
-        updChar()
+        updateHero()
         // eslint-disable-next-line
     }, [])
 
-    const onCharLoaded = (char) => {
-        setChar(char)
-    }
-
-    const updChar = () => {
-        getCharacter((Math.random() * (1011420 - 1011003) + 1011003).toFixed(0))
-            .then(onCharLoaded)
-            .then(() => setProcess('idle'))
+    // (Math.random() * (1011420 - 1011003) + 1011003).toFixed(0) stable
+    // Math.floor(Math.random() * (1010789 - 1009146) + 1009146) unstable
+    const updateHero = () => {
+        fetch((Math.random() * (1011420 - 1011003) + 1011003).toFixed(0))
+            .then(res => {
+                if (res.data) setChar(res.data)
+            })
     }
 
     return (
-        <CSSTransition timeout={450} classNames={"randomchar-node"} in={char}>
-            <div className="randomchar">
-                <TransitionGroup component={null}>
-                    {setContent(process, char, View)}
-                </TransitionGroup>
-                <div className="randomchar__static">
-                    <p className="randomchar__title">
-                        Random character for today!<br />
-                        Do you want to get to know him better?
-                    </p>
-                    <p className="randomchar__title">
-                        Or choose another one
-                    </p>
-                    <button className="button button__main" disabled={loading}>
-                        <div className="inner" onClick={() => updChar()}>try it</div>
-                    </button>
-                    <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
-                </div>
+        <div className="randomchar">
+            {isError ? <ErrorMessage /> : setContent(status, char, View)}
+            <div className="randomchar__static">
+                <p className="randomchar__title">
+                    Random character for today!<br />
+                    Do you want to get to know him better?
+                </p>
+                <p className="randomchar__title">
+                    Or choose another one
+                </p>
+                <button className="button button__main" disabled={isLoading || isFetching}>
+                    <div className="inner" onClick={() => updateHero()}>try it</div>
+                </button>
+                <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
             </div>
-        </CSSTransition>
+        </div>
     )
 }
 
 const View = ({ data }) => {
     const { thumbnail, id, name, description, wiki } = data
-    let imgStyle = { objectFit: '' }
-    if (thumbnail.includes('image_not_available') || thumbnail.includes('4c002e0305708')) {
-        imgStyle = { objectFit: 'unset' }
-    }
 
     return (
         <div className="randomchar__block">
-            <img src={thumbnail} alt="Random character" className="randomchar__img" style={imgStyle} />
+            <img src={thumbnail} alt="Random character" className="randomchar__img" />
             <div className="randomchar__info">
                 <p className={`randomchar__name`}>{name}</p>
                 <p className="randomchar__descr">
@@ -80,4 +74,4 @@ const View = ({ data }) => {
     )
 }
 
-export default RandomChar;
+export default React.memo(RandomChar);

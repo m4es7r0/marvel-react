@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-const apikey = '5edd85bb5eef761ea6190f242cafb309'
+const apikey = '90d8837848db3f5da67d76fb430612fd'
 
 const marvel = createApi({
     reducerPath: 'marvel/api',
@@ -27,7 +27,7 @@ const marvel = createApi({
                 }
             }),
             transformResponse: ({ data }) => {
-                return data.results[0]
+                return data
             }
         }),
         getHeroByName: builder.query({

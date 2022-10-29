@@ -8,7 +8,8 @@ const heroesSlice = createSlice({
     name: 'heroes',
     initialState: heroesAdapter.getInitialState({
         selectedHeroStatus: 'waiting',
-        selectedHero: null
+        randomHeroStatus: 'pending',
+        selectedHero: null,
     }),
     extraReducers: (builder) => {
         builder
@@ -18,6 +19,9 @@ const heroesSlice = createSlice({
                 state.selectedHeroStatus = 'idle'
                 state.selectedHero = action.payload
             })
+            .addMatcher(marvel.endpoints.getSingleHero.matchPending, (state) => { state.randomHeroStatus = 'pending' })
+            .addMatcher(marvel.endpoints.getSingleHero.matchRejected, (state) => { state.randomHeroStatus = 'rejected' })
+            .addMatcher(marvel.endpoints.getSingleHero.matchFulfilled, (state) => { state.randomHeroStatus = 'idle' })
             .addDefaultCase(() => { })
     }
 })

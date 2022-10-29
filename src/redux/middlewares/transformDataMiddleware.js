@@ -30,12 +30,12 @@ export const _transformData = (data) => {
 
 const transformRespose = store => next => action => {
     // rtq
-    if (action.type === 'marvel/api/executeQuery/fulfilled' && action.meta.arg.endpointName === 'getSingleHero') action.payload = _transformData(_transformCharacter(action.payload))
+    if (action.type === 'marvel/api/executeQuery/fulfilled' && action.meta.arg.endpointName === 'getSingleHero') action.payload = _transformData(_transformCharacter(action.payload.results[0]))
     if (action.type === 'marvel/api/executeQuery/fulfilled' && action.meta.arg.endpointName === 'getHeroes') action.payload = action.payload.map(_transformCharacter)
     if (action.type === 'marvel/api/executeQuery/fulfilled' && action.meta.arg.endpointName === 'getHeroByName') action.payload = action.payload.map(_transformCharacter)
 
     // reducers
-    if (action.type === 'heroes/fetchSingleHero/fulfilled')action.payload =  _transformData(_transformCharacter(action.payload.data.results[0]))
+    if (action.type === 'heroes/fetchSingleHero/fulfilled') action.payload = _transformData(_transformCharacter(action.payload.data.results[0]))
     return next(action)
 }
 

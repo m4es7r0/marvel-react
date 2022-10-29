@@ -29,8 +29,8 @@ const CharList = (props) => {
     }, [offset])
 
     const onScroll = () => {
-        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
-            setOffset(state => state + 9)
+        if (window.innerHeight + window.pageYOffset === document.body.offsetHeight && status !== 'pending') {
+            setOffset(state => state + 10)
         }
         return
     }

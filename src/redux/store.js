@@ -1,15 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
 import transformRespose from './middlewares/transformDataMiddleware'
 import heroesReducer from './slices/heroSlice'
-import charlistAPI from './api/charlist.api'
+import marvel from './api/marvel.api'
 
 const store = configureStore({
     reducer: {
         heroes: heroesReducer,
-        [charlistAPI.reducerPath]: charlistAPI.reducer
+        [marvel.reducerPath]: marvel.reducer
     },
     middleware: getDefaultMiddleware => (
-        [...getDefaultMiddleware().concat(transformRespose, charlistAPI.middleware)]
+        [...getDefaultMiddleware().concat(transformRespose, marvel.middleware)]
     ),
     devTools: true
 })

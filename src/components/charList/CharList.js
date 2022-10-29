@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
 
-import { useLazyGetHeroesQuery } from '../../redux/api/charlist.api';
+import { useLazyGetHeroesQuery } from '../../redux/api/marvel.api';
 
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './charList.scss';
@@ -17,11 +17,10 @@ const CharList = (props) => {
 
     useEffect(() => {
         // first query
-        window.addEventListener('scroll', onScroll)
         fetch(offset).then(res => setHeroes(res.data))
 
+        window.addEventListener('scroll', onScroll)
         return () => window.removeEventListener('scroll', onScroll)
-
         // eslint-disable-next-line
     }, [])
 
@@ -29,7 +28,6 @@ const CharList = (props) => {
         // upd heroes
         fetch(offset + 9).unwrap()
         setHeroes(state => [...state, ...data])
-
         // eslint-disable-next-line
     }, [offset])
 

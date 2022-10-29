@@ -10,15 +10,15 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './charInfo.scss';
 import { setContent } from '../../utils/setContent';
 
-const CharInfo = (props) => {
+const CharInfo = ({ charId }) => {
     const dispatch = useDispatch()
     const char = useSelector(({ heroes }) => heroes.selectedHero)
     const status = useSelector(({ heroes }) => heroes.selectedHeroStatus)
 
     React.useEffect(() => {
-        if (props.charId) dispatch(fetchSingleHero(props.charId))
+        if (charId) dispatch(fetchSingleHero(charId))
         // eslint-disable-next-line
-    }, [props.charId])
+    }, [charId])
 
     return (
         <TransitionGroup component={null}>
@@ -30,28 +30,23 @@ const CharInfo = (props) => {
 }
 
 const View = ({ data, renderDescription }) => {
-    const { name, thumbnail, wiki, homepage, comics } = data
-
-    let imgStyle = { objectFit: '' }
-    if (thumbnail.includes('image_not_available') || thumbnail.includes('4c002e0305708')) {
-        imgStyle = { objectFit: 'unset' }
-    }
+    const { id, name, thumbnail, wiki, comics } = data
 
     return (
         <CSSTransition timeout={400} classNames="char__basics-wrapper-node" in={data}>
             <>
                 <div className="char__basics-wrapper">
                     <div className="char__basics">
-                        <img src={thumbnail} alt={name} style={imgStyle} />
+                        <img src={thumbnail} alt={name} />
                         <div>
                             <div className="char__info-name">{name}</div>
                             <div className="char__btns">
                                 <div className='char__btns__wrapper'>
                                     <div>
-                                        <a href={homepage} className="button button__main button__info">
+                                        <Link to={`character/${id}`} className="button button__main button__info">
                                             <div className="inner inner__info">homepage</div>
-                                        </a>
-                                        <a href={wiki} className="button button__secondary button__info">
+                                        </Link>
+                                        <a href={wiki} target='_blank' rel='noreferrer' className="button button__secondary button__info">
                                             <div className="inner inner__info">Wiki</div>
                                         </a>
                                     </div>

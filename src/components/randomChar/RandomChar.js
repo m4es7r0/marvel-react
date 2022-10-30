@@ -3,18 +3,16 @@ import { useSelector } from 'react-redux';
 import { useLazyGetSingleHeroQuery } from '../../redux/api/marvel.api'
 
 import { Link } from "react-router-dom"
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-
 import { setContent } from '../../utils/setContent';
+import ErrorMessage from '../errorMessage/errorMessage';
 
 import mjolnir from '../../resources/img/mjolnir.svg';
 import './randomChar.scss';
-import ErrorMessage from '../errorMessage/errorMessage';
 
 const RandomChar = () => {
     const [fetch, { isLoading, isFetching, isError }] = useLazyGetSingleHeroQuery()
     const status = useSelector(({ heroes }) => heroes.randomHeroStatus)
-    const [char, setChar] = React.useState({})
+    const [char, setChar] = React.useState(false)
 
     React.useEffect(() => {
         updateHero()
@@ -24,10 +22,12 @@ const RandomChar = () => {
     // (Math.random() * (1011420 - 1011003) + 1011003).toFixed(0) stable
     // Math.floor(Math.random() * (1010789 - 1009146) + 1009146) unstable
     const updateHero = () => {
-        fetch((Math.random() * (1011420 - 1011003) + 1011003).toFixed(0))
+        const rndId = (Math.random() * (1011420 - 1011003) + 1011003).toFixed(0)
+        fetch(rndId)
             .then(res => {
                 if (res.data) setChar(res.data)
             })
+            .finally(setChar(false))
     }
 
     return (

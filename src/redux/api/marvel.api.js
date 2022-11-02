@@ -41,7 +41,31 @@ const marvel = createApi({
             transformResponse: ({ data }) => {
                 return data.results
             }
-        })
+        }),
+        getComics: builder.query({
+            query: (offset) => ({
+                url: 'comics',
+                params: {
+                    limit: 8,
+                    offset,
+                    apikey,
+                }
+            }),
+            transformResponse: ({ data }) => {
+                return data.results
+            }
+        }),
+        getSingleComic: builder.query({
+            query: (id) => ({
+                url: `comics/${id}`,
+                params: {
+                    apikey
+                }
+            }),
+            transformResponse: ({ data }) => {
+                return data
+            }
+        }),
     }),
 })
 
@@ -52,6 +76,9 @@ export const {
     useLazyGetSingleHeroQuery,
     useGetHeroByNameQuery,
     useLazyGetHeroByNameQuery,
+    useGetComicsQuery,
+    useLazyGetComicsQuery,
+    useGetSingleComicQuery
 } = marvel
 
 export default marvel

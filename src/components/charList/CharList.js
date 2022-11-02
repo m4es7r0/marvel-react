@@ -4,38 +4,32 @@ import PropTypes from 'prop-types';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
 
-import { useLazyGetHeroesQuery } from '../../redux/api/marvel.api';
+import { useGetHeroesQuery } from '../../redux/api/marvel.api';
 
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './charList.scss';
 
 const CharList = (props) => {
     const [offset, setOffset] = useState(210)
-    const [fetch, { data = [], isError, isLoading, isFetching }] = useLazyGetHeroesQuery()
-
+    const { data = [], isLoading, isFetching, isError } = useGetHeroesQuery(offset)
     const [heroes, setHeroes] = useState([])
 
     useEffect(() => {
         // first query
-        fetch(offset).then(res => setHeroes(res.data))
-
         window.addEventListener('scroll', onScroll)
         return () => window.removeEventListener('scroll', onScroll)
-        // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
         // upd heroes
-        fetch(offset + 9).unwrap()
         setHeroes(state => [...state, ...data])
-        // eslint-disable-next-line
     }, [offset])
 
     const onScroll = () => {
         let scrolled = window.innerHeight + window.pageYOffset
-        let pageHeight = document.body.clientHeight - 20
+        let pageHeight = document.body.offsetHeight - 20
 
-        if (scrolled >= pageHeight) {
+        if (scrolled >= pageHeight ) {
             setOffset(state => state + 9)
         }
     }
@@ -49,11 +43,6 @@ const CharList = (props) => {
     const renderItems = (arr) => {
         const items = arr.map((card, i) => {
             let { id, name, thumbnail } = card
-
-            let imgStyle = { objectFit: '' }
-            if (thumbnail.includes('image_not_available') || thumbnail.includes('4c002e0305708')) {
-                imgStyle = { objectFit: 'unset' }
-            }
 
             return (
                 <CSSTransition key={id} timeout={450} classNames={"card-node"}>
@@ -75,7 +64,7 @@ const CharList = (props) => {
                         <div className="card__block">
                             <div className="card__header">
                                 <div className="card__header-img">
-                                    <img src={thumbnail} alt={name} style={imgStyle} />
+                                    <img src={thumbnail} alt={name} />
                                 </div>
                             </div>
                             <div className="card__footer">
@@ -96,7 +85,7 @@ const CharList = (props) => {
 
 
     const errorMessage = isError ? <ErrorMessage paragraph={true} /> : null
-    const content = isError ? errorMessage : renderItems(heroes)
+    const content = isError ? errorMessage : renderItems(heroes.length > 0 ? heroes : data)
 
     return (
         <div className="char__list">

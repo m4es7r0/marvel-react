@@ -1,35 +1,26 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { useGetComicsQuery } from '../../redux/api/marvel.api';
+import { useLazyGetComicsQuery } from '../../redux/api/marvel.api';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 import ErrorMessage from '../errorMessage/errorMessage';
 import Spinner from '../spinner/Spinner';
 import './comicsList.scss';
 
 const ComicsList = () => {
-    const [offset, setOffset] = useState(210)
-    const { data = [], isLoading, isFetching, isError } = useGetComicsQuery(offset)
+    const [offset, setOffset] = useState(200)
+    const [fetch, { data = [], isLoading, isFetching, isError }] = useLazyGetComicsQuery()
     const [list, setList] = useState([])
 
     useEffect(() => {
-        // first query
-        window.addEventListener('scroll', onScroll)
-        return () => window.removeEventListener('scroll', onScroll)
+        onRequest()
     }, [])
 
-    useEffect(() => {
-        // upd heroes
-        setList(state => [...state, ...data])
-    }, [offset])
-
-    const onScroll = () => {
-        let scrolled = window.innerHeight + window.pageYOffset
-        let pageHeight = document.body.offsetHeight - 1
-
-        if (scrolled >= pageHeight ) {
-            setOffset(state => state + 8)
-        }
+    const onRequest = () => {
+        fetch(offset)
+            .then(({ data }) => setList(state => [...state, ...data]))
+            .finally(setOffset(s => s + 8))
     }
 
     const renderComics = (comicsList) => {
@@ -69,21 +60,23 @@ const ComicsList = () => {
     }
 
     const errorMessage = isError ? <ErrorMessage /> : null;
-    const content = isError ? errorMessage : renderComics(list.length > 0 ? list : data);
+    const content = isError ? errorMessage : renderComics(list);
 
     return (
         <div className="comics__list">
-            {content}
-            {isLoading || isFetching ? <Spinner /> : null}
-            {document.body.offsetHeight <= window.innerHeight
-                ? <button
-                    className="button button__main button__long"
-                    onClick={() => setOffset(state => state + 9)}
-                    disabled={isFetching}
-                >
-                    <div className="inner">load more</div>
-                </button>
-                : null}
+            <InfiniteScroll dataLength={list.length} next={onRequest} hasMore={true}>
+                {content}
+                {isLoading || isFetching ? <Spinner /> : null}
+                {document.body.offsetHeight <= window.innerHeight
+                    ? <button
+                        className="button button__main button__long"
+                        onClick={onRequest}
+                        disabled={isFetching}
+                    >
+                        <div className="inner">load more</div>
+                    </button>
+                    : null}
+            </InfiniteScroll>
         </div>
     )
 }

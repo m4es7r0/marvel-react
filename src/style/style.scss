@@ -121,3 +121,13 @@ img {
         opacity: 1
     }
 }
+
+// infscrl components
+.infinite-scroll-component__outerdiv,
+.infinite-scroll-component  {
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

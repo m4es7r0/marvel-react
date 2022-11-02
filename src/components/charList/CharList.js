@@ -1,37 +1,28 @@
 import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+import InfiniteScroll from 'react-infinite-scroll-component';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
 
-import { useGetHeroesQuery } from '../../redux/api/marvel.api';
+import { useLazyGetHeroesQuery } from '../../redux/api/marvel.api';
 
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './charList.scss';
 
 const CharList = (props) => {
     const [offset, setOffset] = useState(210)
-    const { data = [], isLoading, isFetching, isError } = useGetHeroesQuery(offset)
+    const [fetch, { isLoading, isFetching, isError }] = useLazyGetHeroesQuery()
     const [heroes, setHeroes] = useState([])
 
     useEffect(() => {
-        // first query
-        window.addEventListener('scroll', onScroll)
-        return () => window.removeEventListener('scroll', onScroll)
+        onRequest()
     }, [])
 
-    useEffect(() => {
-        // upd heroes
-        setHeroes(state => [...state, ...data])
-    }, [offset])
-
-    const onScroll = () => {
-        let scrolled = window.innerHeight + window.pageYOffset
-        let pageHeight = document.body.offsetHeight - 20
-
-        if (scrolled >= pageHeight ) {
-            setOffset(state => state + 9)
-        }
+    const onRequest = () => {
+        fetch(offset)
+            .then(({ data }) => setHeroes(state => [...state, ...data]))
+            .finally(setOffset(s => s + 9))
     }
 
     const itemsRef = useRef([])
@@ -85,21 +76,23 @@ const CharList = (props) => {
 
 
     const errorMessage = isError ? <ErrorMessage paragraph={true} /> : null
-    const content = isError ? errorMessage : renderItems(heroes.length > 0 ? heroes : data)
+    const content = isError ? errorMessage : renderItems(heroes)
 
     return (
         <div className="char__list">
-            {content}
-            {isLoading || isFetching ? <Spinner /> : null}
-            {document.body.offsetHeight <= window.innerHeight
-                ? <button
-                    className="button button__main button__long"
-                    onClick={() => setOffset(state => state + 9)}
-                    disabled={isFetching}
-                >
-                    <div className="inner">load more</div>
-                </button>
-                : null}
+            <InfiniteScroll dataLength={heroes.length} next={onRequest} hasMore={true} scrollThreshold={.7}>
+                {content}
+                {isLoading || isFetching ? <Spinner /> : null}
+                {document.body.offsetHeight <= window.innerHeight
+                    ? <button
+                        className="button button__main button__long"
+                        onClick={onRequest}
+                        disabled={isFetching}
+                    >
+                        <div className="inner">load more</div>
+                    </button>
+                    : null}
+            </InfiniteScroll>
         </div>
     )
 }

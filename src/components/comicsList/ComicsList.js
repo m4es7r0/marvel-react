@@ -10,7 +10,7 @@ import './comicsList.scss';
 
 const ComicsList = () => {
     const [offset, setOffset] = useState(200)
-    const [fetch, { data = [], isLoading, isFetching, isError }] = useLazyGetComicsQuery()
+    const [fetch, { isLoading, isFetching, isError }] = useLazyGetComicsQuery()
     const [list, setList] = useState([])
 
     useEffect(() => {
@@ -64,7 +64,7 @@ const ComicsList = () => {
 
     return (
         <div className="comics__list">
-            <InfiniteScroll dataLength={list.length} next={onRequest} hasMore={true}>
+            <InfiniteScroll dataLength={list.length} next={onRequest} hasMore={true} scrollThreshold={.8}>
                 {content}
                 {isLoading || isFetching ? <Spinner /> : null}
                 {document.body.offsetHeight <= window.innerHeight

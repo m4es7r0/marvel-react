@@ -1,3 +1,15 @@
+@use 'sass:math';
+
+@function prc($pxF, $pxS) {
+    $result: math.div($pxF, $pxS) * 100%;
+    @return $result;
+}
+
+@function rem($px) {
+    $result: math.div($px, 16) + rem;
+    @return $result;
+}
+
 @import './variables';
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap');
 @import './button';
@@ -53,22 +65,22 @@ input::-webkit-inner-spin-button {
 }
 
 .app {
-    width: 1100px;
+    width: rem(1100);
     margin: 0 auto;
-    padding: 50px 0 0 0;
+    padding: rem(50) 0 0 0;
     position: relative;
 
     .bg-decoration {
         position: absolute;
         right: 0;
         bottom: 0;
-        width: 380px;
+        width: rem(380);
         z-index: -1;
     }
 }
 
 main {
-    margin-top: 50px;
+    margin-top: rem(50);
     position: relative;
 }
 
@@ -124,10 +136,117 @@ img {
 
 // infscrl components
 .infinite-scroll-component__outerdiv,
-.infinite-scroll-component  {
+.infinite-scroll-component {
     &::-webkit-scrollbar {
         display: none;
     }
+
     -ms-overflow-style: none;
     scrollbar-width: none;
+}
+
+// media
+
+@media screen and (min-width: 2560px) {
+    .app {
+        width: rem(1500);
+
+        .button {
+            width: 125px;
+        }
+    }
+
+    .char__content {
+        justify-content: space-between;
+        grid-template-columns: 950px 500px;
+    }
+
+    .char__grid {
+        grid-template-columns: repeat(4, 225px);
+        row-gap: 50px;
+    }
+
+    .char__search-wrapper {
+        input {
+            width: 285px;
+        }
+
+        button {
+            width: 125px;
+        }
+    }
+
+    .char__basics {
+        & div {
+            width: 250px;
+        }
+
+        .button {
+            width: 110px;
+        }
+    }
+}
+
+
+@media screen and (min-width: 1024px) {
+    .app {
+        width: rem(800);
+
+        .button {
+            width: 85px;
+        }
+    }
+
+    .randomchar {
+        & .randomchar__block {
+            padding: 30px 25px;
+            grid-template-columns: auto auto;
+            column-gap: 30px;
+
+            img {
+                width: 130px;
+                height: 130px;
+            }
+        }
+    }
+
+    .char__content {
+        grid-template-columns: 1fr;
+        grid-template-areas: "column-1"
+            "column-2";
+
+        & .char__list {
+            grid-area: column-2;
+            position: sticky;
+            top: 25px;
+        }
+
+        & .char__sidebar {
+            grid-area: column-1;
+            z-index: 999;
+            position: relative;
+            top: 0;
+            margin-bottom: 25px;
+
+            .char__search-form {
+
+                & button,
+                .button {
+                    width: 125px;
+                }
+
+                form {
+                    div.char__search-wrapper {
+                        input {
+                            width: 300px;
+                        }
+                    }
+                }
+            }
+
+            .char__info {
+                display: none;
+            }
+        }
+    }
 }

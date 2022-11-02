@@ -7,9 +7,11 @@ import CharInfo from '../charInfo/CharInfo'
 import CharList from '../charList/CharList'
 
 import FormSearch from '../form/FormSearch'
+import Modal from '../modal/Modal'
 
 const Main = () => {
     const [selectedChar, setChar] = React.useState(null);
+    const [visibile, setVisible] = React.useState(false);
 
     const onCharSelected = (id) => {
         setChar(id);
@@ -39,13 +41,14 @@ const Main = () => {
                 </ErrorBoundary>
                 <div className="char__content">
                     <ErrorBoundary>
-                        <CharList onCharSelected={onCharSelected} />
+                        <CharList onCharSelected={onCharSelected} activeModal={setVisible} />
                     </ErrorBoundary>
                     <div className='char__sidebar'>
                         <ErrorBoundary>
                             <CharInfo
                                 charId={selectedChar}
-                                renderDescription={(description, name) => transformDescriptonForCharInfo(description, name)} />
+                                renderDescription={(description, name) => transformDescriptonForCharInfo(description, name)}
+                                className={'char__info'} />
                         </ErrorBoundary>
                         <ErrorBoundary>
                             <FormSearch />
@@ -53,6 +56,11 @@ const Main = () => {
                     </div>
                 </div>
             </main>
+            <ErrorBoundary>
+                <Modal visibile={visibile} setVisible={setVisible} >
+                    <CharInfo charId={selectedChar} className='char__info-modal' />
+                </Modal>
+            </ErrorBoundary>
         </>
     )
 }

@@ -43,11 +43,13 @@ const CharList = (props) => {
                         tabIndex={0}
                         onClick={() => {
                             props.onCharSelected(id)
+                            props.activeModal(true)
                             focusOnItem(i)
                         }}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 props.onCharSelected(id)
+                                props.activeModal(true)
                                 focusOnItem(id)
                             }
                         }}

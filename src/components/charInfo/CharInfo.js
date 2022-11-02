@@ -10,7 +10,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './charInfo.scss';
 import { setContent } from '../../utils/setContent';
 
-const CharInfo = ({ charId }) => {
+const CharInfo = ({ charId, className }) => {
     const dispatch = useDispatch()
     const char = useSelector(({ heroes }) => heroes.selectedHero)
     const status = useSelector(({ heroes }) => heroes.selectedHeroStatus)
@@ -22,7 +22,7 @@ const CharInfo = ({ charId }) => {
 
     return (
         <TransitionGroup component={null}>
-            <div className="char__info" id='sticky'>
+            <div className={className} id='sticky'>
                 {setContent(status, char, View)}
             </div>
         </TransitionGroup>

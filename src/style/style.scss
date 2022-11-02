@@ -116,6 +116,11 @@ img {
     }
 }
 
+// disable modal
+.outer {
+    display: none;
+}
+
 .pulse {
     animation: pulse 1.5s ease-in-out .5s infinite
 }
@@ -188,45 +193,131 @@ img {
 }
 
 
-@media screen and (min-width: 1024px) {
+@media screen and (max-width: 1124px) {
+    main {
+        position: relative;
+    }
+
     .app {
-        width: rem(800);
+        width: rem(780);
 
         .button {
-            width: 85px;
+            width: 125px;
         }
     }
 
     .randomchar {
-        & .randomchar__block {
+        height: 210px;
+
+        &__block {
             padding: 30px 25px;
-            grid-template-columns: auto auto;
-            column-gap: 30px;
+            grid-template-columns: 150px auto;
+            column-gap: 20px;
+
+            height: 210px;
+
+            .button {
+                width: 70px;
+                font-size: rem(12);
+            }
 
             img {
-                width: 130px;
-                height: 130px;
+                width: 150px;
+                height: 150px;
             }
+        }
+
+        &__info {
+            height: 100%;
+            padding: 0;
+        }
+
+        &__name {
+            font-size: rem(17.5);
+            margin-bottom: 0;
+        }
+
+        &__descr {
+            font-size: rem(12);
+            display: block;
+            height: 20px;
+            margin-top: -10px;
+        }
+
+        &__btns {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+
+            a:nth-child(1) {
+                margin-right: 0px;
+            }
+        }
+        
+        //stacit
+
+        &__static {
+            height: 210px;
+            padding: 26px 20px 30px 20px;
+            overflow: hidden;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            p {
+                &:last-of-type {
+                    display: none;
+                }
+            }
+        }
+
+        &__title {
+            font-size: rem(20);
+        }
+
+        &__decoration {
+            width: 160px;
         }
     }
 
     .char__content {
-        grid-template-columns: 1fr;
-        grid-template-areas: "column-1"
-            "column-2";
+        // grid-template-columns: 1fr;
+        // grid-template-areas: "column-1"
+        //     "column-2";
+
+        display: flex;
+        flex-direction: column-reverse;
+
+        flex: 1 1 auto;
 
         & .char__list {
-            grid-area: column-2;
-            position: sticky;
-            top: 25px;
+            // grid-area: column-2;
+            width: 100%;
+
+            .char__grid {
+                grid-template-columns: repeat(3, auto);
+                gap: 50px;
+
+                .card {
+                    &__block {
+                        width: 100%;
+                    }
+                }
+            }
         }
 
         & .char__sidebar {
-            grid-area: column-1;
+            // grid-area: column-1;
+            width: 100%;
             z-index: 999;
             position: relative;
             top: 0;
             margin-bottom: 25px;
+
+            .char__info {
+                display: none;
+            }
 
             .char__search-form {
 
@@ -237,15 +328,69 @@ img {
 
                 form {
                     div.char__search-wrapper {
+                        gap: 20px;
                         input {
-                            width: 300px;
+                            width: 80%;
+                            text-align: center;
                         }
                     }
                 }
             }
+        }
+    }
 
-            .char__info {
-                display: none;
+    .outer {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba($color: #000, $alpha: .4);
+        z-index: 99999;
+        opacity: 0;
+        transition: all .2s ease;
+        pointer-events: none;
+        overflow: hidden;
+
+        &__content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            opacity: 0;
+            transform: translate(-50, -50%);
+            transform: scale(0);
+            transition: all .2s ease;
+        }
+
+        &.active {
+            pointer-events: all;
+            opacity: 1;
+
+            .outer__content {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    }
+
+    .char__info-modal {
+        position: absolute;
+        padding: 25px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        visibility: visible;
+        background-color: #fff;
+        z-index: 99999;
+        border-radius: 10px;
+
+        .char__basics {
+            gap: 20px;
+
+            button,
+            .button {
+                width: 90px;
             }
         }
     }

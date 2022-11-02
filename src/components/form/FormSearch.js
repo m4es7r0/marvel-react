@@ -59,11 +59,13 @@ export default function FormSearch() {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         placeholder="Enter name"
+                        tabIndex={7}
                     />
                     <button
                         type='submit'
                         className="button button__main"
-                        disabled={isLoading || isFetching}>
+                        disabled={isLoading || isFetching}
+                        tabIndex={8}>
                         <div className="inner">find</div>
                     </button>
                 </div>

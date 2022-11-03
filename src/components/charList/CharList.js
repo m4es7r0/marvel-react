@@ -82,10 +82,10 @@ const CharList = (props) => {
 
     return (
         <div className="char__list">
-            <InfiniteScroll dataLength={heroes.length} next={onRequest} hasMore={true} scrollThreshold={.7}>
+            <InfiniteScroll dataLength={heroes.length} next={onRequest} hasMore={true} scrollThreshold={.8} scrollableTarget={window}>
                 {content}
                 {isLoading || isFetching ? <Spinner /> : null}
-                {document.body.offsetHeight <= window.innerHeight
+                {document.body.clientHeight <= window.innerHeight
                     ? <button
                         className="button button__main button__long"
                         onClick={onRequest}

@@ -11,6 +11,10 @@
         position: relative;
     }
 
+    &.char__list {
+        min-height: 152px;
+    }
+
     &__grid {
         margin-bottom: 25px;
         display: grid;

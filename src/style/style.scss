@@ -206,6 +206,11 @@ img {
         }
     }
 
+    .single-char,
+    .single-comic {
+        grid-template-columns: auto auto auto;
+    }
+
     .randomchar {
         height: 210px;
 
@@ -253,7 +258,7 @@ img {
                 margin-right: 0px;
             }
         }
-        
+
         //stacit
 
         &__static {
@@ -329,6 +334,7 @@ img {
                 form {
                     div.char__search-wrapper {
                         gap: 20px;
+
                         input {
                             width: 80%;
                             text-align: center;
@@ -344,8 +350,8 @@ img {
         position: fixed;
         top: 0;
         left: 0;
-        width: 100vw;
-        height: 100vh;
+        min-width: 100vmax;
+        min-height: 100vmax;
         background-color: rgba($color: #000, $alpha: .4);
         z-index: 99999;
         opacity: 0;
@@ -393,5 +399,11 @@ img {
                 width: 90px;
             }
         }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .app {
+        padding: 20px;
     }
 }

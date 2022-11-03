@@ -62,13 +62,33 @@
     &__descr {
         font-size: 14px;
         line-height: 18px;
-        // max-height: 80px;
+        max-height: 80px;
         padding-bottom: 8px;
         flex: 1 1 auto;
         align-self: stretch;
+
         overflow-y: auto;
-        // overflow: hidden;
-        // scrollbar-width: none;
+        scroll-behavior: smooth;
+
+        scroll-snap-align: none;
+        scrollbar-color: #5C5C5C lighten($color: #5C5C5C, $amount: 40%);
+        scrollbar-width: thin;
+        scrollbar-gutter: stable;
+
+        &::-webkit-scrollbar {
+            width: 1.2px;
+        }
+
+        &::-webkit-scrollbar-track {
+            // background: lighten($color: #5C5C5C, $amount: 40%);
+            background: transparent;
+            border-radius: 100px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #5C5C5C;
+            border-radius: 100px;
+        }
     }
 
     &__btns {

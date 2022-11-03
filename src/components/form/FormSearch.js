@@ -40,7 +40,7 @@ export default function FormSearch() {
         <div className="char__search-wrapper">
             <div className="char__search-success">There is! Visit "{char[0].name}" page?</div>
             <Link to={`/character/${char[0].id}`} className="button button__secondary">
-                <div className="inner">To page</div>
+                <div className="inner" tabIndex={0}>To page</div>
             </Link>
         </div> :
         <div className="char__search-error">

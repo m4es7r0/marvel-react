@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { useLazyGetComicsQuery } from '../../redux/api/marvel.api';
@@ -11,7 +12,7 @@ import './comicsList.scss';
 const ComicsList = () => {
     const [offset, setOffset] = useState(200)
     const [fetch, { isLoading, isFetching, isError }] = useLazyGetComicsQuery()
-    const [list, setList] = useState([])
+    const data = useSelector(({comics}) => comics.comicsList)
 
     useEffect(() => {
         onRequest()
@@ -19,7 +20,6 @@ const ComicsList = () => {
 
     const onRequest = () => {
         fetch(offset)
-            .then(({ data }) => setList(state => [...state, ...data]))
             .finally(setOffset(s => s + 8))
     }
 
@@ -60,11 +60,11 @@ const ComicsList = () => {
     }
 
     const errorMessage = isError ? <ErrorMessage /> : null;
-    const content = isError ? errorMessage : renderComics(list);
+    const content = isError ? errorMessage : renderComics(data);
 
     return (
         <div className="comics__list">
-            <InfiniteScroll dataLength={list.length} next={onRequest} hasMore={true} scrollThreshold={.8}>
+            <InfiniteScroll dataLength={data.length} next={onRequest} hasMore={true} scrollThreshold={.8}>
                 {content}
                 {isLoading || isFetching ? <Spinner /> : null}
                 {document.body.offsetHeight <= window.innerHeight

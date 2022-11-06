@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -13,7 +14,7 @@ import './charList.scss';
 const CharList = (props) => {
     const [offset, setOffset] = useState(210)
     const [fetch, { isLoading, isFetching, isError }] = useLazyGetHeroesQuery()
-    const [heroes, setHeroes] = useState([])
+    const data = useSelector(({heroes}) => heroes.heroesList)
 
     useEffect(() => {
         onRequest()
@@ -21,7 +22,6 @@ const CharList = (props) => {
 
     const onRequest = () => {
         fetch(offset)
-            .then(({ data }) => setHeroes(state => [...state, ...data]))
             .finally(setOffset(s => s + 9))
     }
 
@@ -78,11 +78,11 @@ const CharList = (props) => {
 
 
     const errorMessage = isError ? <ErrorMessage paragraph={true} /> : null
-    const content = isError ? errorMessage : renderItems(heroes)
+    const content = isError ? errorMessage : renderItems(data)
 
     return (
         <div className="char__list">
-            <InfiniteScroll dataLength={heroes.length} next={onRequest} hasMore={true} scrollThreshold={.8} scrollableTarget={window}>
+            <InfiniteScroll dataLength={data.length} next={onRequest} hasMore={true} scrollThreshold={.8} scrollableTarget={window}>
                 {content}
                 {isLoading || isFetching ? <Spinner /> : null}
                 {document.body.clientHeight <= window.innerHeight

@@ -1,25 +1,34 @@
 import { useState, useEffect } from 'react';
+import { useGetSingleComicQuery } from '../../redux/api/marvel.api';
 import { Helmet } from 'react-helmet';
 import { Link, useParams } from 'react-router-dom'
 
-import useMarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/errorMessage';
 import Spinner from '../spinner/Spinner';
 
 import './singleComic.scss';
 
 const SingleComic = () => {
+    const [comic, setComic] = useState({})
     const { id } = useParams()
-    const [comic, setComic] = useState(null)
-    const { loading, error, getComic } = useMarvelService()
+
+    console.log(useParams());
+
+    const {
+        data = {},
+        isLoading,
+        isSuccess,
+        isError
+    } = useGetSingleComicQuery(id)
 
     useEffect(() => {
-        getComic(id).then(setComic)
-    }, [id])
+        setComic(data)
+        // eslint-disable-next-line
+    }, [isSuccess])
 
-    const spinner = loading ? <Spinner /> : null
-    const errorMessage = error ? <ErrorMessage /> : null
-    const content = !(loading || error || !comic) ? <View data={comic} /> : null
+    const spinner = isLoading ? <Spinner /> : null
+    const errorMessage = isError ? <ErrorMessage /> : null
+    const content = !isLoading && !isError && data ? <View data={comic} /> : null
 
     return (
         <>  
@@ -33,7 +42,7 @@ const SingleComic = () => {
 const View = ({ data }) => {
     const { title, description, thumbnail, pages, language, prices } = data
     const price = {
-        print: prices.print[0].price,
+        print: prices?.print[0].price,
     }
     return (
         <div className="single-comic">

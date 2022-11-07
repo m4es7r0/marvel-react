@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 import { setContent } from '../../utils/setContent';
 import ErrorMessage from '../errorMessage/errorMessage';
 
-import mjolnir from '../../resources/img/mjolnir.svg';
+import mjolnir from '../../assets/mjolnir.svg';
 import './randomChar.scss';
 
 const RandomChar = () => {

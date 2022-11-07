@@ -13,7 +13,7 @@ const store = configureStore({
     middleware: getDefaultMiddleware => (
         [...getDefaultMiddleware().concat(transformRespose, marvel.middleware)]
     ),
-    devTools: true
+    devTools: process.env.NODE_ENV !== 'production',
 })
 
 export default store

@@ -12,8 +12,6 @@ const SingleComic = () => {
     const [comic, setComic] = useState({})
     const { id } = useParams()
 
-    console.log(useParams());
-
     const {
         data = {},
         isLoading,
